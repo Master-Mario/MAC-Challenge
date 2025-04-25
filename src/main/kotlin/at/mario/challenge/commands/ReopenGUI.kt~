@@ -1,0 +1,4 @@
+package at.mario.challenge.commands
+
+class ReopenGUI {
+}

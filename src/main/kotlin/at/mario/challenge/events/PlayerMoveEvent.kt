@@ -1,0 +1,108 @@
+package at.mario.challenge.events
+
+import at.mario.challenge.Main
+import at.mario.challenge.challenges.Challenges
+import at.mario.challenge.timer.Timer
+import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Utils
+import de.miraculixx.kpaper.event.listen
+import de.miraculixx.kpaper.extensions.bukkit.cmp
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
+import org.bukkit.GameMode
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarStyle
+import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.inventory.ItemStack
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import java.awt.Component
+import kotlin.collections.set
+
+object PlayerMoveEvent {
+    val onRun = listen<PlayerMoveEvent> {
+        if (Timer.paused && it.player.gameMode == GameMode.SURVIVAL && it.player.gameMode != GameMode.ADVENTURE){
+            it.isCancelled = true
+            return@listen
+        }
+        if (Challenges.RUN_RANDOMIZER.active) {
+            Config().add("run-randomizer.run-blocks-amount.${it.player.name}", Config().config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}") + it.to.distance(it.from))
+            if (Challenges.RUN_RANDOMIZER.active){
+                for (player in Bukkit.getOnlinePlayers()) {
+                    if (!Main.bossBars.contains(player)) {
+                        Main.bossBars[player] = Bukkit.createBossBar("Lauf-Randomizer", BarColor.GREEN, BarStyle.SOLID)
+                    }
+                    val runBlocks = Config().config.getDouble("run-randomizer.run-blocks-amount.${player.name}")
+                    Main.bossBars[player]!!.progress = Math.clamp(runBlocks/Config().config.getDouble("run-randomizer.anzahl-der-distanz"), 0.0, 1.0)
+                    Main.bossBars[player]!!.setTitle("${ChatColor.BOLD}${ChatColor.GREEN}Lauf-Randomizer: ${runBlocks.toInt()}/${Config().config.getDouble("run-randomizer.anzahl-der-distanz").toInt()}")
+                    if (!Main.bossBars[player]!!.players.contains(player)) {
+                        Main.bossBars[player]!!.addPlayer(player)
+                    }
+                    if (runBlocks >= Config().config.getDouble("run-randomizer.anzahl-der-distanz")) {
+                        val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
+                        player.playSound(sound)
+                        Config().add("run-randomizer.run-blocks-amount.${player.name}", 0.0)
+                        //Spieler bekommt ein Random Item
+                        var everyMaterial: MutableList<Material> = mutableListOf()
+                        for (material in Material.values()) {
+                            if (material.isItem) {
+                                everyMaterial = everyMaterial.plus(material) as MutableList<Material>
+                            }
+                        }
+                        val randomMaterial : Material = everyMaterial.random()
+                        it.player.inventory.addItem(Utils().createItem(
+                            randomMaterial, 64,
+                            glow = false,
+                            unbreakable = false,
+                            hideUnbreakable = false,
+                        ))
+                    }
+                }
+            }
+        }
+
+        if (it.to.y <= it.from.y) {
+            return@listen
+        }
+        //Bukkit.broadcast(cmp("${it.player.name} ist gesprungen" + " (${getDistance(it.to)})"))
+        /*if (getDistance(it.to) != 0.0){
+            return@listen
+        }*/
+        if (getDistance(it.to) != 0.41999998688697815 && getDistance(it.to) != 0.5199999809265137 && getDistance(it.to) >= 0.6){
+            return@listen
+        }
+        if (!Challenges.JUMP_MULTIPLIER.active){
+            return@listen
+        }
+        if (Main.jumpHeight>94){
+            Main.jumpHeight = 94
+        }
+        it.player.removePotionEffect(PotionEffectType.JUMP_BOOST)
+        it.player.addPotionEffect(PotionEffect(PotionEffectType.JUMP_BOOST, Int.MAX_VALUE, Main.jumpHeight))
+        //it.player.velocity = Vector(0.0, Main.jumpHeight, 0.0)
+        //it.player.sendMessage("${Main.jumpHeight}")
+        if (Main.jumpHeight<4){
+            Main.jumpHeight++
+        }else {
+            Main.jumpHeight = Main.jumpHeight + Main.jumpHeight / 4
+        }
+    }
+
+    fun getDistance(e: Location): Double {
+        val loc: Location = e.clone()
+        val y = loc.blockY
+        var solidBlock = loc.block
+        for (i in y downTo -64) {
+            loc.y = i.toDouble()
+            if (loc.block.type.isSolid()) {
+                solidBlock = loc.block
+                break
+            }
+        }
+        return loc.y-solidBlock.location.y-1
+    }
+}
