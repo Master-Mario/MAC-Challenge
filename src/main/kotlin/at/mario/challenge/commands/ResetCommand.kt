@@ -11,6 +11,9 @@ class ResetCommand {
     val resetCommand = commandTree("reset"){
         literalArgument("confirm"){
             anyExecutor{ executer, _ ->
+                if (!executer.isOp){
+                    return@anyExecutor
+                }
                 for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                     onlinePlayer.kick(cmp("${executer.name} hat die Welt zurückgesetzt", KColors.RED))
                 }

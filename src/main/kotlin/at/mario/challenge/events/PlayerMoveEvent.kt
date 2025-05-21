@@ -7,6 +7,8 @@ import at.mario.challenge.utils.Config
 import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
+import de.miraculixx.kpaper.runnables.task
+import io.papermc.paper.event.entity.EntityMoveEvent
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.bukkit.Bukkit
@@ -16,6 +18,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
+import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
@@ -24,28 +27,38 @@ import java.awt.Component
 import kotlin.collections.set
 
 object PlayerMoveEvent {
+    val onRunEntity = listen<EntityMoveEvent> {
+        if(Timer.paused){
+            it.isCancelled = true
+            return@listen
+        }
+    }
     val onRun = listen<PlayerMoveEvent> {
-        if (Timer.paused && it.player.gameMode == GameMode.SURVIVAL && it.player.gameMode != GameMode.ADVENTURE){
+        if (Timer.paused && (it.player.gameMode == GameMode.SURVIVAL || it.player.gameMode == GameMode.ADVENTURE)){
+            if (it.to.block == it.from.block){
+                return@listen
+            }
             it.isCancelled = true
             return@listen
         }
         if (Challenges.RUN_RANDOMIZER.active) {
-            Config().add("run-randomizer.run-blocks-amount.${it.player.name}", Config().config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}") + it.to.distance(it.from))
-            if (Challenges.RUN_RANDOMIZER.active){
-                for (player in Bukkit.getOnlinePlayers()) {
-                    if (!Main.bossBars.contains(player)) {
-                        Main.bossBars[player] = Bukkit.createBossBar("Lauf-Randomizer", BarColor.GREEN, BarStyle.SOLID)
-                    }
-                    val runBlocks = Config().config.getDouble("run-randomizer.run-blocks-amount.${player.name}")
-                    Main.bossBars[player]!!.progress = Math.clamp(runBlocks/Config().config.getDouble("run-randomizer.anzahl-der-distanz"), 0.0, 1.0)
-                    Main.bossBars[player]!!.setTitle("${ChatColor.BOLD}${ChatColor.GREEN}Lauf-Randomizer: ${runBlocks.toInt()}/${Config().config.getDouble("run-randomizer.anzahl-der-distanz").toInt()}")
-                    if (!Main.bossBars[player]!!.players.contains(player)) {
-                        Main.bossBars[player]!!.addPlayer(player)
-                    }
-                    if (runBlocks >= Config().config.getDouble("run-randomizer.anzahl-der-distanz")) {
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (!Main.bossBars.contains(player)) {
+                    Main.bossBars[player] = Bukkit.createBossBar("Lauf-Randomizer", BarColor.GREEN, BarStyle.SOLID)
+                }
+                val runBlocks = Config().config.getDouble("run-randomizer.run-blocks-amount.${player.name}")
+                Main.bossBars[player]!!.progress = Math.clamp(runBlocks/Config().config.getDouble("run-randomizer.anzahl-der-distanz"), 0.01, 0.99)
+                Main.bossBars[player]!!.setTitle("${ChatColor.BOLD}${ChatColor.GREEN}Lauf-Randomizer: ${runBlocks.toInt()}/${Config().config.getDouble("run-randomizer.anzahl-der-distanz").toInt()}")
+                if (!Main.bossBars[player]!!.players.contains(player)) {
+                    Main.bossBars[player]!!.addPlayer(player)
+                }
+                task(false, 0, 0, 1){task ->
+                    Config().add("run-randomizer.run-blocks-amount.${it.player.name}", Config().config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}") + it.to.distance(it.from))
+                    if (Config().config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}")>= Config().config.getDouble("run-randomizer.anzahl-der-distanz")) {
+                        Config().add("run-randomizer.run-blocks-amount.${player.name}", 0.0)
                         val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
                         player.playSound(sound)
-                        Config().add("run-randomizer.run-blocks-amount.${player.name}", 0.0)
+
                         //Spieler bekommt ein Random Item
                         var everyMaterial: MutableList<Material> = mutableListOf()
                         for (material in Material.values()) {
@@ -65,6 +78,9 @@ object PlayerMoveEvent {
             }
         }
 
+        if (!Challenges.JUMP_MULTIPLIER.active){
+            return@listen
+        }
         if (it.to.y <= it.from.y) {
             return@listen
         }
@@ -75,9 +91,7 @@ object PlayerMoveEvent {
         if (getDistance(it.to) != 0.41999998688697815 && getDistance(it.to) != 0.5199999809265137 && getDistance(it.to) >= 0.6){
             return@listen
         }
-        if (!Challenges.JUMP_MULTIPLIER.active){
-            return@listen
-        }
+
         if (Main.jumpHeight>94){
             Main.jumpHeight = 94
         }
@@ -105,4 +119,5 @@ object PlayerMoveEvent {
         }
         return loc.y-solidBlock.location.y-1
     }
+
 }

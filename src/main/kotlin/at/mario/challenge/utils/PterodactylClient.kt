@@ -10,8 +10,8 @@ import java.net.URL
 import kotlin.io.encoding.Base64
 
 class PterodactylClient(
-    private val apiUrl: String = "https://mac-panel.ddns.net/api/client",
-    private val clientApiKey: String = "ptlc_KtjFXFAvjsmAeicaCvQNGSCbtf4ZUzO9BSD2DeDyuIL",
+    private val apiUrl: String = "https://panel.mac-netzwerk.net/api/client",
+    private val clientApiKey: String = "ptlc_ZtPP25WX2cAOhqPOku5iNgrWuxafUkwW7M25uOGELpu",
     private val applicationApiKey: String = "ptla_WI07rqzcgsqYy2neFkXCBFYnGfE76MyUaYC0dW3jJxl"
 ) {
 

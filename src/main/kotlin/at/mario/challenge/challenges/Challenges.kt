@@ -4,6 +4,7 @@ import at.mario.challenge.Main
 import at.mario.challenge.utils.Config
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
+import de.miraculixx.kpaper.extensions.bukkit.plainText
 import de.miraculixx.kpaper.extensions.bukkit.plus
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
@@ -47,9 +48,9 @@ enum class Challenges(val icon: Material, val nameComponent: Component, val name
                     )
                 }
                 if (nameComponent == SEQUENCE.nameComponent) {
-                    if (Config().config.contains("sequence.${Bukkit.getOnlinePlayers().size}")) {
+                    if (Config().config.contains("sequence._${Bukkit.getOnlinePlayers().size}_")) {
                         for(i in 1 until Bukkit.getOnlinePlayers().size){
-                            val player = Config().config.getString("sequence.${i+1}")
+                            val player = Config().config.getString("sequence._${cmp((i+1).toString()).plainText()}_")
                             if (player != null) {
                                 val onlinePlayer = Bukkit.getPlayer(player)
                                 onlinePlayer?.sendMessage(Main.prefix + cmp("Du bist der " + (i+1) + ". Spieler", KColors.LIGHTPURPLE))
@@ -59,7 +60,7 @@ enum class Challenges(val icon: Material, val nameComponent: Component, val name
                         //Generiere Sequence
                         var anzahl = 1
                         for (onlinePlayer in Bukkit.getOnlinePlayers()) {
-                            Config().addString("squence.$anzahl", onlinePlayer.name)
+                            Config().addString("sequence._${cmp((anzahl).toString()).plainText()}_", onlinePlayer.name)
                             Bukkit.broadcast(Main.prefix + cmp(anzahl.toString() + ". Spieler: " + onlinePlayer.name, KColors.LIGHTPURPLE))
                             anzahl++;
                         }

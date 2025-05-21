@@ -5,6 +5,7 @@
       <element id="dir-copy" path="$PROJECT_DIR$/../Challenge-Plugin/src/main/kotlin" />
       <element id="file-copy" path="$PROJECT_DIR$/../Challenge-Plugin/src/main/resources/plugin.yml" />
       <element id="file-copy" path="$PROJECT_DIR$/../Challenge-Plugin/src/main/kotlin/at/mario/challenge/Main.kt" />
+      <element id="module-output" name="ChallengePlugin.main" />
     </root>
   </artifact>
 </component>

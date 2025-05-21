@@ -12,12 +12,9 @@ import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
 import de.miraculixx.kpaper.main.KPaper
 import de.miraculixx.kpaper.runnables.KPaperRunnable
-import de.miraculixx.kpaper.runnables.task
 import dev.jorel.commandapi.CommandAPI
 import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
-import org.bukkit.boss.BarColor
-import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.EntityType

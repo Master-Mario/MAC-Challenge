@@ -3,6 +3,7 @@ package at.mario.challenge.events
 import at.mario.challenge.Main
 import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.challenges.Randomizer
+import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -17,7 +18,11 @@ import org.bukkit.event.block.BlockExplodeEvent
 import org.bukkit.inventory.ItemStack
 
 object BlockDropEvent {
-    var onBreak = listen<BlockBreakEvent> {
+    var onBreak = listen<BlockBreakEvent>{
+        if (Timer.paused){
+            it.isCancelled = true
+            return@listen
+        }
         if (Challenges.NO_BLOCK_DROPS.active){
             it.isDropItems = false
             it.block.drops.clear()
