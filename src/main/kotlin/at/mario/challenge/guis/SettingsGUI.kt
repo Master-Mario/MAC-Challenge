@@ -17,8 +17,15 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
+/**
+ * GUI for changing server settings such as difficulty, PVP, natural regeneration, view distance, and simulation distance.
+ * Displays the current status of each setting and allows navigation back to the main menu.
+ */
 object SettingsGUI {
-
+    /**
+     * Opens the settings GUI for the given player.
+     * @param player The player to open the GUI for
+     */
     fun open(player: HumanEntity) {
         val inventory: Inventory =
             Bukkit.createInventory(null, 27, "${ChatColor.BOLD}${ChatColor.DARK_GRAY}Setze die Einstellungen")
@@ -179,6 +186,4 @@ object SettingsGUI {
         inventory.setItem(10, ItemStack(Material.AIR))
         player.openInventory(inventory)
     }
-
-
 }

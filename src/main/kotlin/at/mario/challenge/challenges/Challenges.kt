@@ -9,14 +9,21 @@ import de.miraculixx.kpaper.extensions.bukkit.plus
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
-import org.bukkit.Bukkit.getWorlds
 import org.bukkit.ChatColor
-import org.bukkit.GameRule
 import org.bukkit.Material
-import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-enum class Challenges(val icon: Material, val nameComponent: Component, val nameString: String, val description: Component, private var isActive: Boolean) {
+/**
+ * Enum representing all available challenge types for the plugin.
+ * Each challenge has an icon, name, description, and activation logic.
+ */
+enum class Challenges(
+    val icon: Material,
+    val nameComponent: Component,
+    val nameString: String,
+    val description: Component,
+    private var isActive: Boolean
+) {
 
     NO_DAMAGE(Material.SHIELD, cmp("Kein Schaden", bold = true, color = KColors.DARKRED), "Kein Schaden", cmp("Spiele Minecraft ohne Shaden zu nehmen.", KColors.LIGHTGRAY), false),
     NO_RESPAWN(Material.SKELETON_SKULL, cmp("Kein Respawn", bold = true, color = KColors.RED), "Kein Respawn", cmp("Spiele Minecraft ohne zu Sterben.", KColors.LIGHTGRAY), false),
@@ -33,6 +40,9 @@ enum class Challenges(val icon: Material, val nameComponent: Component, val name
     NO_CRAFTING(Material.CRAFTING_TABLE, cmp("Kein Crafting", bold = true, color = KColors.LIGHTPURPLE), "Kein Crafting", cmp("Du kannst nichts craften.", KColors.LIGHTGRAY), false),
     SEQUENCE(Material.DIAMOND_SWORD, cmp("Reihenfolge", bold = true, color = KColors.LIGHTPURPLE), "Reihenfolge", cmp("Schlage Spieler in der Reihenfolge.", KColors.LIGHTGRAY), false);
 
+    /**
+     * Indicates if the challenge is active. Setting this property triggers activation logic and player notifications.
+     */
     var active: Boolean
         get() = isActive
         set(value) {
@@ -57,12 +67,12 @@ enum class Challenges(val icon: Material, val nameComponent: Component, val name
                             }
                         }
                     }else{
-                        //Generiere Sequence
+                        // Generate sequence
                         var anzahl = 1
                         for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                             Config().addString("sequence._${cmp((anzahl).toString()).plainText()}_", onlinePlayer.name)
                             Bukkit.broadcast(Main.prefix + cmp(anzahl.toString() + ". Spieler: " + onlinePlayer.name, KColors.LIGHTPURPLE))
-                            anzahl++;
+                            anzahl++
                         }
                     }
                     if (!Config().config.contains("sequence.next")) {

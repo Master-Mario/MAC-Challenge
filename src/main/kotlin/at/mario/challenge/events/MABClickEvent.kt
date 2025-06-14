@@ -12,8 +12,10 @@ import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
-import java.util.UUID
 
+/**
+ * Handles inventory click events for the Mob Army Battle (MAB) GUI, including wave selection and team logic.
+ */
 object MABClickEvent {
     private val config = Config()
     private val utils = Utils()
@@ -65,6 +67,10 @@ object MABClickEvent {
         )
     }
 
+    /**
+     * Parses the kills file and returns the kill counts for both teams.
+     * @return Pair of maps: (team1Kills, team2Kills)
+     */
     private fun parseKills(): Pair<Map<String, Int>, Map<String, Int>> {
         val team1Kills = mutableMapOf<String, Int>()
         val team2Kills = mutableMapOf<String, Int>()
@@ -89,6 +95,13 @@ object MABClickEvent {
         return team1Kills to team2Kills
     }
 
+    /**
+     * Creates the inventory for a specific wave and team.
+     * @param wave The wave number
+     * @param teamKills The kill counts for the team
+     * @param teamName The team name
+     * @return The created Inventory
+     */
     private fun createWaveInventory(wave: Int, teamKills: Map<String, Int>, teamName: String): Inventory {
         val inv = Bukkit.createInventory(null, 54, cmp("Wave $wave", KColors.ORANGERED))
 
@@ -127,6 +140,11 @@ object MABClickEvent {
         return inv
     }
 
+    /**
+     * Opens the given inventory for all players in the specified team.
+     * @param team The team (collection of players)
+     * @param inventory The inventory to open (or null to close)
+     */
     private fun openInventoryForTeam(team: Collection<Player>, inventory: Inventory?) {
         Bukkit.getOnlinePlayers().forEach { player ->
             if (team.contains(player)) {
@@ -139,7 +157,9 @@ object MABClickEvent {
         }
     }
 
-
+    /**
+     * Handles inventory click events for the Mob Army Battle GUI.
+     */
     val onClick = listen<org.bukkit.event.inventory.InventoryClickEvent> {
         if (it.view.title == "${ChatColor.DARK_RED}Mob-Army-Waves") {
             it.isCancelled = true
@@ -180,6 +200,6 @@ object MABClickEvent {
                 }
             }
         }
-        // Handling für die Wave GUI (z. B. Wave 1) kannst du ähnlich vereinfachen
+        // Additional handling for wave GUIs can be added here
     }
 }

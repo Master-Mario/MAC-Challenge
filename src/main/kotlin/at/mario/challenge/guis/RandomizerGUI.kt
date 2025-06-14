@@ -1,6 +1,5 @@
 package at.mario.challenge.guis
 
-import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.challenges.Randomizer
 import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.chat.KColors
@@ -13,8 +12,14 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
+/**
+ * GUI for selecting a randomizer. Displays all available randomizer options and their status.
+ */
 object RandomizerGUI {
-
+    /**
+     * Opens the randomizer selection GUI for the given player.
+     * @param player The player to open the GUI for
+     */
     fun open(player: HumanEntity) {
         val inventory: Inventory = Bukkit.createInventory(null, 27, "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle einen Randomizer")
         val item1 = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
@@ -41,12 +46,9 @@ object RandomizerGUI {
                 meta.lore(listOf(randomizer.description, cmp(""), cmp("Status: ", KColors.GRAY) + cmp("Inaktiv", KColors.RED)))
             }
             item.itemMeta = meta
-
             inventory.addItem(item)
         }
         inventory.setItem(10, ItemStack(Material.AIR))
         player.openInventory(inventory)
     }
-
-
 }

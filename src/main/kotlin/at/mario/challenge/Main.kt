@@ -1,5 +1,8 @@
 package at.mario.challenge
 
+/**
+ * Main class for the MAC Challenge plugin. Handles plugin lifecycle, configuration, and initialization of commands, events, and challenges.
+ */
 import at.mario.challenge.events.MABClickEvent
 import at.mario.challenge.challenges.*
 import at.mario.challenge.commands.*
@@ -27,13 +30,30 @@ import kotlin.collections.mutableMapOf
 import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.seconds
 
-
+/**
+ * Main plugin class extending KPaper. Handles loading, startup, and shutdown logic for the MAC Challenge plugin.
+ */
 class Main : KPaper() {
     companion object{
+        /**
+         * The jump height for the challenge.
+         */
         var jumpHeight = 0
+        /**
+         * Singleton instance of the Main class.
+         */
         lateinit var instance : Main
+        /**
+         * Prefix used for plugin messages.
+         */
         val prefix = cmp("MAC", KColors.ORANGERED) + cmp(" | ", KColors.GRAY)
+        /**
+         * Map of team numbers to player name lists, loaded from config.
+         */
         var teams = mutableMapOf<Int, List<String>?>(1 to Config().config.getList("team1") as List<String>?, 2 to Config().config.getList("team2") as List<String>?)
+        /**
+         * Collection of online player names.
+         */
         var onlinePlayersCollection: Collection<String> = listOf()
             get(){
                 field = listOf()
@@ -42,25 +62,61 @@ class Main : KPaper() {
                 }
                 return field
             }
-        
+        /**
+         * Runnable for starting tasks.
+         */
         var taskStarting: KPaperRunnable? = null
+        /**
+         * File for storing kill data.
+         */
         var killFile: File? = null
+        /**
+         * FileConfiguration for kill data.
+         */
         var killData: FileConfiguration? = null
-
+        /**
+         * Map of player UUIDs to their kill counts by entity type.
+         */
         val killCounts: MutableMap<UUID, MutableMap<EntityType, Int>> = mutableMapOf()
+        /**
+         * List of players in MAB Team 1.
+         */
         var mabTeam1: MutableList<Player> = mutableListOf()
+        /**
+         * List of players in MAB Team 2.
+         */
         var mabTeam2: MutableList<Player> = mutableListOf()
+        /**
+         * Team name from config.
+         */
         val team = config.getString("team")
+        /**
+         * Mode name from config.
+         */
         val mode = config.getString("mode")
+        /**
+         * Indicates if the server runs on a VPS.
+         */
         const val SERVER_RUNS_ON_VPS = true
+        /**
+         * Map of players to their BossBars.
+         */
         val bossBars = mutableMapOf<Player, BossBar>()
     }
+    /**
+     * Reference to the ResetCommand instance.
+     */
     private var resetCommand: ResetCommand? = null
+    /**
+     * Indicates if a reset is in progress.
+     */
     private var reset = false
 
-
+    /**
+     * Called when the plugin is loaded. Initializes config, commands, and teams. Handles world reset if needed.
+     */
     override fun load() {
-
+        // Initialize player run-blocks-amount in config if not present
         for (player in Bukkit.getOnlinePlayers()) {
             if (!Config().config.contains("run-randomizer.run-blocks-amount.${player.name}")){
                 Config().add(
@@ -70,35 +126,40 @@ class Main : KPaper() {
         }
 
         instance = this
+        // Register commands
         TryCommand()
         TimerCommand()
         ChallengeCommand()
-        MAB_Command()
+        MABCommand()
         RandomizerCommand()
         ReopenGUI()
         UtilsCommand()
         ChallengeManager()
         resetCommand = ResetCommand()
 
+        // Assign players to teams based on config
+        mabTeam1.clear()
+        mabTeam2.clear()
         for (player in Bukkit.getOnlinePlayers()) {
             if (Config().config.contains(player.name + ".team")){
-                if (Config().config.getString(player.name + ".team") == "Team1") {
-                    mabTeam1 += player
-                } else if (Config().config.getString(player.name + ".team") == "Team2") {
-                    mabTeam2 += player
+                when (Config().config.getString(player.name + ".team")) {
+                    "Team1" -> mabTeam1 += player
+                    "Team2" -> mabTeam2 += player
                 }
             }
         }
 
-
-        if (!Config().config.contains("canTry"))
+        // Initialize config values if not present
+        if (!Config().config.contains("canTry")) {
             Config().addBoolean("canTry", false)
             Config().save()
-
-        if (!Config().config.contains("isReset"))
+        }
+        if (!Config().config.contains("isReset")) {
             Config().addBoolean("isReset", false)
             Config().save()
+        }
 
+        // Handle world reset if isReset is true
         if (Config().config.getBoolean("isReset")) {
             reset = true
             try {
@@ -140,7 +201,11 @@ class Main : KPaper() {
         }
     }
 
+    /**
+     * Called when the plugin is enabled. Initializes events, loads settings, and activates challenges.
+     */
     override fun startup() {
+        // Register events
         Timer
         PlayerMoveEvent
         DeathEvent
@@ -163,6 +228,7 @@ class Main : KPaper() {
                 " \\______  |___|  (____  |____|____/\\___  |___|  /_____/  \\___  |____|   |_______ |____/_____/ |__|___|  /\n" +
                 "        \\/     \\/     \\/               \\/     \\/             \\/                 \\/                    \\/ ")
         )
+        // Set world settings from config or use defaults
         if (Config().config.contains("settings.view-distance")) {
             for (world in Bukkit.getWorlds()) {
                 world.viewDistance = Config().config.getInt("settings.view-distance")
@@ -187,6 +253,7 @@ class Main : KPaper() {
             Config().addBoolean("settings.pvp", true)
             Config().save()
         }
+        // Initialize and activate challenges, goals, battles, and randomizer settings
         for (challenges in Challenges.values()){
             if (!Config().config.contains(challenges.nameString)){
                 Config().addBoolean(challenges.nameString, false)
@@ -219,6 +286,7 @@ class Main : KPaper() {
                 randomizer.active = Config().config.getBoolean(randomizer.nameString)
             }
         }
+        // Initialize timer from config or set to zero if reset
         if (!Config().config.contains("timer")){
             Config().addInt("timer", 0)
             Config().save()
@@ -234,6 +302,9 @@ class Main : KPaper() {
 
     }
 
+    /**
+     * Called when the plugin is disabled. Handles saving config and shutting down services.
+     */
     override fun shutdown() {
         reset = false
         if (resetCommand!!.reset)

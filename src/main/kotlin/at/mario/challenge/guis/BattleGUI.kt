@@ -1,7 +1,6 @@
 package at.mario.challenge.guis
 
 import at.mario.challenge.challenges.Battles
-import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -13,8 +12,14 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
+/**
+ * GUI for selecting a battle mode. Displays all available battle modes and their status.
+ */
 object BattleGUI {
-
+    /**
+     * Opens the battle mode selection GUI for the given player.
+     * @param player The player to open the GUI for
+     */
     fun open(player: HumanEntity) {
         val inventory: Inventory = Bukkit.createInventory(null, 27, "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle einen Battle-Modus")
         val item1 = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
@@ -41,12 +46,9 @@ object BattleGUI {
                 meta.lore(listOf(battles.description, cmp(""), cmp("Status: ", KColors.GRAY) + cmp("Inaktiv", KColors.RED)))
             }
             item.itemMeta = meta
-
             inventory.addItem(item)
         }
         inventory.setItem(10, ItemStack(Material.AIR))
         player.openInventory(inventory)
     }
-
-
 }

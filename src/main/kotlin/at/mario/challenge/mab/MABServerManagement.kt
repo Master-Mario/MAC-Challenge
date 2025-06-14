@@ -3,101 +3,113 @@ package at.mario.challenge.mab
 import at.mario.challenge.Main
 import at.mario.challenge.utils.PterodactylClient
 import at.mario.challenge.utils.ServerConnector
-import at.mario.challenge.utils.ServerController
-import at.mastermario.maclobby.mab.Team
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 
+/**
+ * Manages the creation, starting, stopping, and player teleportation for team-specific Minecraft servers (farming and battle servers).
+ * Integrates with Pterodactyl for server management and BungeeCord for player transfer.
+ */
 class MABServerManagement(
     private val pterodactylClient: PterodactylClient = PterodactylClient(),
 ) {
+    /** List of all teams and their associated server IDs. */
     private val teamList: MutableList<Team> = mutableListOf()
 
-    // Methode, um Server für ein Team zu erstellen
+    /**
+     * Creates farming and battle servers for a team and stores their IDs.
+     * @param teamName The name of the team
+     */
     fun createTeamServers(teamName: String) {
-        // Erstelle den Farming-Server
         val farmingServerResponse = pterodactylClient.createServer(teamName, "farming")
         val farmingServerId = parseServerId(farmingServerResponse)
-
-        // Erstelle den Battle-Server
         val battleServerResponse = pterodactylClient.createServer(teamName, "battle")
         val battleServerId = parseServerId(battleServerResponse)
-
-        // Speichern des Teams und der Server-IDs
         val team = Team(teamName, farmingServerId, battleServerId)
         teamList.add(team)
-
-        println("Team $teamName Server erstellt: Farming-Server ID = $farmingServerId, Battle-Server ID = $battleServerId")
+        println("Team $teamName servers created: Farming-Server ID = $farmingServerId, Battle-Server ID = $battleServerId")
     }
 
-    // Methode, um Server für ein Team zu starten
+    /**
+     * Starts the farming and battle servers for a team.
+     * @param teamName The name of the team
+     */
     fun startTeamServers(teamName: String) {
         val team = teamList.find { it.name == teamName }
         team?.let {
             pterodactylClient.startServer(it.farmingServerId!!)
             pterodactylClient.startServer(it.battleServerId!!)
-            println("Starten von Servern für Team $teamName...")
+            println("Starting servers for team $teamName...")
         }
     }
 
-    // Methode, um Server für ein Team zu stoppen
+    /**
+     * Stops the farming and battle servers for a team.
+     * @param teamName The name of the team
+     */
     fun stopTeamServers(teamName: String) {
         val team = teamList.find { it.name == teamName }
         team?.let {
             pterodactylClient.stopServer(it.farmingServerId!!)
             pterodactylClient.stopServer(it.battleServerId!!)
-            println("Stoppen von Servern für Team $teamName...")
+            println("Stopping servers for team $teamName...")
         }
     }
 
-    // Methode, um die Server-IDs aus der API-Antwort zu extrahieren
+    /**
+     * Parses the server ID from a Pterodactyl API response.
+     * @param response The API response as a JSON string
+     * @return The server ID as a string
+     */
     private fun parseServerId(response: String): String {
         val parser = JSONParser()
         val jsonObject = parser.parse(response) as JSONObject
         return (jsonObject["attributes"] as JSONObject)["id"] as String
     }
 
-    // Methode, um den Serverstatus zu überwachen (z. B. nach dem Start)
+    /**
+     * Monitors the status of a team's servers and prints their current state.
+     * @param teamName The name of the team
+     */
     private fun monitorServerStatus(teamName: String) {
-        // Du kannst hier eine Schleife verwenden, um regelmäßig den Status der Server zu prüfen
         val server1Status = pterodactylClient.getServerStatus("${teamName}_1")
         val server2Status = pterodactylClient.getServerStatus("${teamName}_2")
-
-        println("Status für ${teamName}_1: $server1Status")
-        println("Status für ${teamName}_2: $server2Status")
+        println("Status for ${teamName}_1: $server1Status")
+        println("Status for ${teamName}_2: $server2Status")
     }
 
-    // Methode, um Spieler zu den Team-Servern zu teleportieren
+    /**
+     * Teleports players of each team to their respective servers using BungeeCord.
+     * @param teamName The name of the team
+     */
     private fun teleportPlayersToServer(teamName: String) {
-        // Hole alle Spieler, die zum Team gehören
         val team1Players = getPlayersInTeam(1)
         val team2Players = getPlayersInTeam(2)
-
-        // Teleportiere Team 1 Spieler zum Server 1
         for (player in team1Players) {
             ServerConnector.connect(player, "${teamName}_1")
         }
-
-        // Teleportiere Team 2 Spieler zum Server 2
         for (player in team2Players) {
             ServerConnector.connect(player, "${teamName}_2")
         }
     }
 
-    // Beispielmethode, um Spieler basierend auf Teamnamen zu bekommen
+    /**
+     * Gets the list of players for a given team number.
+     * @param teamNumber The team number (1 or 2)
+     * @return List of Player objects in the team
+     */
     private fun getPlayersInTeam(teamNumber: Int): List<Player> {
-        // Ersetze dies durch deine Logik, um die Spieler für ein bestimmtes Team zu bekommen
-        if (teamNumber == 1) {
-            return Main.mabTeam1
-        }else if (teamNumber == 2) {
-            return Main.mabTeam2
-        }else{
-            return emptyList()
+        return when (teamNumber) {
+            1 -> Main.mabTeam1
+            2 -> Main.mabTeam2
+            else -> emptyList()
         }
     }
 
+    /**
+     * Entry point for starting the event: creates servers for both teams.
+     */
     fun onEventStart(){
         createTeamServers("Team1")
         createTeamServers("Team2")

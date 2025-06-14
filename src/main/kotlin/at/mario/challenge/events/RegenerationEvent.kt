@@ -10,7 +10,13 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityRegainHealthEvent
 
+/**
+ * Handles player regeneration events, including logic for shared regeneration challenge.
+ */
 object RegenerationEvent {
+    /**
+     * Listens for entity regain health events and applies shared regeneration logic.
+     */
     val onRegeneration = listen<EntityRegainHealthEvent> {
         if (it.entity !is Player) {
             return@listen

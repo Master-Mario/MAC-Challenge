@@ -13,11 +13,18 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
+/**
+ * GUI for selecting a challenge. Supports pagination and displays all available challenges and their status.
+ */
 object ChallengeGUI {
-
     private const val CHALLENGES_PER_PAGE = 5
     val playerPages = mutableMapOf<String, Int>()
 
+    /**
+     * Opens the challenge selection GUI for the given player and page.
+     * @param player The player to open the GUI for
+     * @param page The page number to display
+     */
     fun open(player: HumanEntity, page: Int = 0) {
         val challenges = Challenges.values()
         val maxPages = challenges.size / CHALLENGES_PER_PAGE
@@ -27,11 +34,11 @@ object ChallengeGUI {
             itemMeta = itemMeta?.apply { displayName(cmp("")) }
         }
 
-        // Rahmen setzen
+        // Set frame
         for (i in 0..8) inventory.setItem(i, filler)
         for (i in inventory.size-9..inventory.size-1) inventory.setItem(i, filler)
 
-        // Zurück-Button
+        // Back button
         inventory.setItem(9, Utils().createItem(Material.DARK_OAK_DOOR, 1, glow = false, unbreakable = false, false, cmp("Zurück")))
         inventory.setItem(10, Utils().createItem(Material.STRUCTURE_VOID, 1, glow = false, unbreakable = false, false, cmp("Zurück")))
         inventory.setItem(16, Utils().createItem(Material.STRUCTURE_VOID, 1, glow = false, unbreakable = false, false, cmp("Zurück")))
@@ -44,7 +51,7 @@ object ChallengeGUI {
             inventory.setItem(17, Utils().createItem(Material.ARROW, 1, glow = false, unbreakable = false, false, cmp("§7Nächste Seite >")))
         }
 
-        // Challenges anzeigen
+        // Show challenges
         val startIndex = page * CHALLENGES_PER_PAGE
         val endIndex = minOf(startIndex + CHALLENGES_PER_PAGE, challenges.size)
 
@@ -61,7 +68,7 @@ object ChallengeGUI {
                 )
             )
             item.itemMeta = meta
-            inventory.addItem( item)
+            inventory.addItem(item)
         }
 
         inventory.setItem(10, ItemStack(Material.AIR))

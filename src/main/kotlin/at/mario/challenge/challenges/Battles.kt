@@ -10,8 +10,29 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
 
-enum class Battles(val icon: Material, val nameComponent: Component, val nameString: String, val description: Component, private var isActive: Boolean) {
-    MOB_ARMY_BATTLE(Material.WITHER_SKELETON_SKULL, cmp("Mob Army Battle", bold = true, color = KColors.DARKRED), "Mob Army Battle", cmp("Baue deine eigene Monster Armee auf.", KColors.LIGHTGRAY), false);
+/**
+ * Enum representing all available battle challenges.
+ * Each battle has an icon, name, description, and activation logic.
+ */
+enum class Battles(
+    val icon: Material,
+    val nameComponent: Component,
+    val nameString: String,
+    val description: Component,
+    private var isActive: Boolean
+) {
+    /** Mob Army Battle challenge. */
+    MOB_ARMY_BATTLE(
+        Material.WITHER_SKELETON_SKULL,
+        cmp("Mob Army Battle", bold = true, color = KColors.DARKRED),
+        "Mob Army Battle",
+        cmp("Baue deine eigene Monster Armee auf.", KColors.LIGHTGRAY),
+        false
+    );
+
+    /**
+     * Indicates if the battle is active. Setting this property triggers activation logic and player notifications.
+     */
     var active: Boolean
         get() = isActive
         set(value) {
@@ -19,10 +40,7 @@ enum class Battles(val icon: Material, val nameComponent: Component, val nameStr
                 if(nameString == "Mob Army Battle"){
                     Config().resetKills()
                     try {
-                        /*Main.core = Bukkit.getServer().pluginManager.getPlugin("Multiverse-Core") as MultiverseCore
-                        Main.core!!.mvWorldManager.deleteWorld("team2");
-                        Main.core!!.mvWorldManager.addWorld("team2", World.Environment.NORMAL, null, WorldType.NORMAL, true, null)
-                        Main.core!!.mvWorldManager.loadWorld("team2")*/
+                        // Multiverse-Core world management logic can be added here if needed
                     }catch (e: Exception){
                         for (player in Bukkit.getOnlinePlayers()) {
                             Bukkit.broadcast(cmp("Multiverse-Core nicht gefunden, bitte installieren", KColors.RED))
@@ -45,5 +63,4 @@ enum class Battles(val icon: Material, val nameComponent: Component, val nameStr
                 }
             }
         }
-
 }

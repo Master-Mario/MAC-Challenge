@@ -11,7 +11,13 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.EntityDamageEvent
 
+/**
+ * Handles player damage events, including logic for no fall damage, no damage, and shared damage challenges.
+ */
 object DamageEvent {
+    /**
+     * Listens for entity damage events and applies challenge logic for damage handling.
+     */
     val onDamage = listen<EntityDamageEvent> {
         if (Challenges.NO_FALL_DAMAGE.active){
             if (it.cause == EntityDamageEvent.DamageCause.FALL) {

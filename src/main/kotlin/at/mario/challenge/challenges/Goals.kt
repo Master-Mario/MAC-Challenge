@@ -9,12 +9,49 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
 
-enum class Goals(val icon: Material, val nameComponent: Component, val nameString: String, val description: Component, private var isActive: Boolean) {
-    ENDER_DRAGON(Material.DRAGON_HEAD, cmp("Ender Drache", bold = true, color = KColors.LIGHTPURPLE), "Ender Drache", cmp("Wenn der Ender Drache stirbt gewinnt ihr.", KColors.LIGHTGRAY), false),
-    ELDER_GUARDIAN(Material.TRIDENT, cmp("Elder Guardian", bold = true, color = KColors.AQUA), "Elder Guardian", cmp("Wenn der Elder Guardian stirbt gewinnt ihr.", KColors.LIGHTGRAY), false),
-    WITHER(Material.WITHER_SKELETON_SKULL, cmp("Wither", bold = true, color = KColors.DARKGRAY), "Wither", cmp("Wenn der Wither stirbt gewinnt ihr.", KColors.LIGHTGRAY), false),
-    TIMER(Material.CLOCK, cmp("Timer", bold = true, color = KColors.RED), "Timer", cmp("Wenn der Timer endet gewinnt ihr.", KColors.LIGHTGRAY), false);
+/**
+ * Enum representing all available goal types for the challenge.
+ * Each goal has an icon, name, description, and activation logic.
+ */
+enum class Goals(
+    val icon: Material,
+    val nameComponent: Component,
+    val nameString: String,
+    val description: Component,
+    private var isActive: Boolean
+) {
+    ENDER_DRAGON(
+        Material.DRAGON_HEAD,
+        cmp("Ender Drache", bold = true, color = KColors.LIGHTPURPLE),
+        "Ender Drache",
+        cmp("Wenn der Ender Drache stirbt gewinnt ihr.", KColors.LIGHTGRAY),
+        false
+    ),
+    ELDER_GUARDIAN(
+        Material.TRIDENT,
+        cmp("Elder Guardian", bold = true, color = KColors.AQUA),
+        "Elder Guardian",
+        cmp("Wenn der Elder Guardian stirbt gewinnt ihr.", KColors.LIGHTGRAY),
+        false
+    ),
+    WITHER(
+        Material.WITHER_SKELETON_SKULL,
+        cmp("Wither", bold = true, color = KColors.DARKGRAY),
+        "Wither",
+        cmp("Wenn der Wither stirbt gewinnt ihr.", KColors.LIGHTGRAY),
+        false
+    ),
+    TIMER(
+        Material.CLOCK,
+        cmp("Timer", bold = true, color = KColors.RED),
+        "Timer",
+        cmp("Wenn der Timer endet gewinnt ihr.", KColors.LIGHTGRAY),
+        false
+    );
 
+    /**
+     * Indicates if the goal is active. Setting this property triggers player notifications.
+     */
     var active: Boolean
         get() = isActive
         set(value) {
@@ -26,5 +63,4 @@ enum class Goals(val icon: Material, val nameComponent: Component, val nameStrin
                 }
             }
         }
-
 }

@@ -11,6 +11,7 @@ import at.mario.challenge.utils.Config
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
+import de.miraculixx.kpaper.extensions.bukkit.plainText
 import de.miraculixx.kpaper.extensions.bukkit.plus
 import de.miraculixx.kpaper.items.name
 import net.kyori.adventure.key.Key
@@ -21,14 +22,46 @@ import org.bukkit.ChatColor
 import org.bukkit.Difficulty
 import org.bukkit.GameRule
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import java.awt.Desktop
 import javax.swing.Action
 
+/**
+ * Handles inventory click events for all custom GUIs in the plugin.
+ * Routes clicks to the correct GUI logic and prevents unwanted item movement.
+ */
 object InventoryClickEvent {
-    val onClick = listen<InventoryClickEvent> {
-        val player = it.whoClicked
+    /**
+     * Listens for inventory click events and handles GUI navigation and item movement prevention.
+     */
+    val onInventoryClick = listen<InventoryClickEvent> {
+        val player = it.whoClicked as Player
+        val title = it.view.title
+        // Prevent item movement in all custom GUIs
+        if (title.contains("Hauptmenü") || title.contains("Wähle eine Challenge") || title.contains("Wähle ein Ziel") || title.contains("Wähle einen Battle-Modus") || title.contains("Wähle einen Randomizer") || title.contains("Setze die Einstellungen") || title.contains("Mob-Army-Waves") || title.contains("Wave")) {
+            it.isCancelled = true
+        }
+        // Navigation logic for GUIs
+        if (title.contains("Hauptmenü")) {
+            when (it.currentItem?.itemMeta?.displayName()?.plainText()) {
+                "§d§lZiele" -> GoalGUI.open(it.whoClicked)
+                "§b§lChallenges" -> ChallengeGUI.open(it.whoClicked)
+                "§a§lBattles" -> BattleGUI.open(it.whoClicked)
+                "§c§lSettings" -> SettingsGUI.open(it.whoClicked)
+            }
+        } else if (title.contains("Wähle eine Challenge")) {
+            if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
+        } else if (title.contains("Wähle ein Ziel")) {
+            if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
+        } else if (title.contains("Wähle einen Battle-Modus")) {
+            if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
+        } else if (title.contains("Wähle einen Randomizer")) {
+            if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
+        } else if (title.contains("Setze die Einstellungen")) {
+            if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
+        }
         if (it.view.title == "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle eine Challenge") {
             it.isCancelled = true
             for (challenges in Challenges.values()) {

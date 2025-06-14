@@ -6,7 +6,13 @@ import de.miraculixx.kpaper.event.listen
 import org.bukkit.entity.EntityType
 import org.bukkit.event.entity.EntityDeathEvent
 
+/**
+ * Handles goal-related events. Triggers win conditions when specific boss mobs are killed and the corresponding goal is active.
+ */
 object GoalEvent {
+    /**
+     * Listens for entity death events and checks if a goal boss was killed.
+     */
     var onGoal = listen<EntityDeathEvent> {
         val entityType = it.entity.type
         when (entityType) {

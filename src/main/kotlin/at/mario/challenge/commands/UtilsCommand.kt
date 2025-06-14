@@ -17,7 +17,15 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 
+/**
+ * Provides utility commands for server management, player actions, and entity control.
+ * Includes commands for spawn, heal, fly, invulnerability, teleportation, inventory viewing, and entity summoning.
+ */
 class UtilsCommand {
+    /**
+     * Teleports the player to the world spawn location.
+     * Only available for operators.
+     */
     val spawnCommand = commandTree("spawn") {
         playerExecutor { player, _ ->
             if (player.isOp) {
@@ -28,6 +36,10 @@ class UtilsCommand {
             }
         }
     }
+    /**
+     * Heals the player to full health, food, and saturation.
+     * Only available for operators.
+     */
     val healCommand = commandTree("heal"){
         playerExecutor{ player, _ ->
             if (player.isOp) {
@@ -41,6 +53,10 @@ class UtilsCommand {
             }
         }
     }
+    /**
+     * Toggles flight for the player.
+     * Only available for operators.
+     */
     val flyCommand = commandTree("fly"){
         playerExecutor{ player, _ ->
             if (player.isOp) {
@@ -55,6 +71,10 @@ class UtilsCommand {
             }
         }
     }
+    /**
+     * Toggles invulnerability for the player.
+     * Only available for operators.
+     */
     val invulnerableCommand = commandTree("invulnerable"){
         playerExecutor{ player, _ ->
             if (player.isOp) {
@@ -69,6 +89,10 @@ class UtilsCommand {
             }
         }
     }
+    /**
+     * Teleports the player to another player or entity of a given type.
+     * Only available for operators.
+     */
     val findCommand = commandTree("find"){
         playerArgument("player") {
             playerExecutor { player, args ->
@@ -120,6 +144,10 @@ class UtilsCommand {
             }
         }
     }
+    /**
+     * Opens the inventory of another player for viewing.
+     * Only available for operators.
+     */
     val invseeCommand = commandTree("invsee") {
         playerArgument("player") {
             playerExecutor { player, args ->
@@ -133,9 +161,12 @@ class UtilsCommand {
             }
         }
     }
+    /**
+     * Teleports another player or entity to the command sender.
+     * Only available for operators.
+     */
     val pickupCommand = commandTree("pickup"){
         playerArgument("player") {
-            //Holt den Spieler zu sich
             playerExecutor { player, args ->
                 val targetPlayer = args["player"] as Player
                 if (player.isOp) {
@@ -170,8 +201,11 @@ class UtilsCommand {
             }
         }
     }
+    /**
+     * Summons a given amount of entities of a specific type at the player's location.
+     * Only available for operators.
+     */
     val summonAmountCommand = commandTree("summonAmount"){
-        //Erstellt so Mobs wie der Spieler will
         entityTypeArgument("type"){
             integerArgument("amount"){
                 playerExecutor { player, args ->

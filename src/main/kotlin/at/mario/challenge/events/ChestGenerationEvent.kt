@@ -1,7 +1,6 @@
 package at.mario.challenge.events
 
 import at.mario.challenge.Main
-import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.challenges.Randomizer
 import at.mario.challenge.utils.Config
 import de.miraculixx.kpaper.event.listen
@@ -9,11 +8,16 @@ import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.world.LootGenerateEvent
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Handles chest generation events, e.g. for custom loot or randomizer logic when a chest is placed or opened.
+ */
 object ChestGenerationEvent {
+    /**
+     * When loot is generated (e.g. chest opened), randomize the loot if CHEST_RANDOMIZER is active.
+     */
     var onChestGenerate = listen<LootGenerateEvent> {
         if (Randomizer.CHEST_RANDOMIZER.active) {
             if (!Randomizer.PER_PLAYER.active){

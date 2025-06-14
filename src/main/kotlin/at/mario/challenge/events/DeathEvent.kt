@@ -25,7 +25,13 @@ import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Handles player and entity death events, including challenge logic for no respawn, team death, entity drops, and randomizer drops.
+ */
 object DeathEvent {
+    /**
+     * Handles player death events, including no respawn and team death logic.
+     */
     val onDeath = listen<PlayerDeathEvent> {
         val player = it.entity
         var someoneDead = false
@@ -41,7 +47,7 @@ object DeathEvent {
                 it.isCancelled = true
                 player.gameMode = GameMode.SPECTATOR
                 if (Challenges.TEAM_DEATH.active && someoneDead) {
-
+                    // Team death logic can be added here
                 } else {
                     Timer.paused = true
                     Bukkit.broadcast(
@@ -76,6 +82,9 @@ object DeathEvent {
             someoneDead = false
         }
     }
+    /**
+     * Handles entity death events, including no entity drops, battle kill tracking, and randomizer drops.
+     */
     val onEntityDeath = listen<EntityDeathEvent>{
         if (Challenges.NO_ENTITY_DROPS.active){
             it.drops.clear()

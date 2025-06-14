@@ -9,12 +9,23 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.io.encoding.Base64
 
+/**
+ * Client for interacting with the Pterodactyl server management API. Supports server status, power control, file upload, and server creation/deletion.
+ */
 class PterodactylClient(
     private val apiUrl: String = "https://panel.mac-netzwerk.net/api/client",
     private val clientApiKey: String = "ptlc_ZtPP25WX2cAOhqPOku5iNgrWuxafUkwW7M25uOGELpu",
     private val applicationApiKey: String = "ptla_WI07rqzcgsqYy2neFkXCBFYnGfE76MyUaYC0dW3jJxl"
 ) {
 
+    /**
+     * Sends an HTTP request to the Pterodactyl API.
+     * @param endpoint API endpoint
+     * @param apiKey API key to use
+     * @param method HTTP method (default GET)
+     * @param body Optional request body
+     * @return Response as String
+     */
     private fun sendRequest(endpoint: String, apiKey: String, method: String = "GET", body: String? = null): String {
         val url = URL("$apiUrl$endpoint")
         val connection = url.openConnection() as HttpURLConnection
@@ -39,6 +50,11 @@ class PterodactylClient(
         return stream.bufferedReader().readText()
     }
 
+    /**
+     * Gets the current status of a server by its ID.
+     * @param serverId The server UUID
+     * @return Status string (e.g., "running", "starting", etc.)
+     */
     fun getServerStatus(serverId: String): String {
         val response = sendRequest("/servers/$serverId/resources", clientApiKey)
         val parser = JSONParser()
@@ -50,6 +66,11 @@ class PterodactylClient(
         return attributes["current_state"] as String
     }
 
+    /**
+     * Sends a start signal to a server.
+     * @param serverId The server UUID
+     * @return API response
+     */
     fun startServer(serverId: String): String {
         val body = """{"signal":"start"}"""
         return sendRequest("/servers/$serverId/power", "POST", body).also {
@@ -57,6 +78,11 @@ class PterodactylClient(
         }
     }
 
+    /**
+     * Sends a stop signal to a server.
+     * @param serverId The server UUID
+     * @return API response
+     */
     fun stopServer(serverId: String): String {
         val body = """{"signal":"stop"}"""
         return sendRequest("/servers/$serverId/power", "POST", body).also {
@@ -64,24 +90,44 @@ class PterodactylClient(
         }
     }
 
+    /**
+     * Sends a restart signal to a server.
+     * @param serverId The server UUID
+     * @return API response
+     */
     fun restartServer(serverId: String): String {
         return sendPowerSignal(serverId, "restart")
     }
 
+    /**
+     * Sends a kill signal to a server.
+     * @param serverId The server UUID
+     * @return API response
+     */
     fun killServer(serverId: String): String {
         return sendPowerSignal(serverId, "kill")
     }
 
+    /**
+     * Sends a power signal (start, stop, restart, kill) to a server.
+     * @param serverId The server UUID
+     * @param signal The signal to send
+     * @return API response
+     */
     private fun sendPowerSignal(serverId: String, signal: String): String {
         val body = """{"signal":"$signal"}"""
         return sendRequest("/servers/$serverId/power", "POST", body)
     }
 
+    /**
+     * Uploads the plugin JAR to the server's plugins directory.
+     * @param serverId The server UUID
+     */
     fun uploadPluginJar(serverId: String) {
         val pluginFile: File = File(Main.instance.javaClass.protectionDomain.codeSource.location.toURI())
         val pluginBytes = pluginFile.readBytes()
 
-        // Erstelle das Zielverzeichnis (falls noch nicht vorhanden)
+        // Create the plugins directory if it does not exist
         val createDirJson = """{ "root": "/", "files": ["plugins"] }"""
         sendRequest("$apiUrl/servers/$serverId/files/create-folder", clientApiKey, "POST", createDirJson)
 
@@ -103,13 +149,19 @@ class PterodactylClient(
         server.consoleSender.sendMessage("📦 Plugin ChallengePLUGIN hochgeladen (Code $responseCode): $response")
     }
 
+    /**
+     * Creates a new Minecraft server via the Pterodactyl API.
+     * @param teamName The team name for the server
+     * @param serverType The type of server
+     * @return API response
+     */
     fun createServer(teamName: String, serverType: String): String {
-        // 1. Allocation finden
+        // 1. Find available allocation
         val allocations = getAvailableAllocations(apiUrl, applicationApiKey)
         val selectedAllocation = allocations.firstOrNull()
             ?: return "Keine freien Allocations verfügbar!"
 
-        // 2. Server-Body vorbereiten
+        // 2. Prepare server creation body
         val body = """
         {
           "name": "${teamName}_${serverType}_server",
@@ -152,6 +204,13 @@ class PterodactylClient(
             body,
         )
     }
+
+    /**
+     * Gets a list of available allocations for server deployment.
+     * @param apiUrl The API base URL
+     * @param apiKey The application API key
+     * @return List of allocation IDs
+     */
     fun getAvailableAllocations(apiUrl: String, apiKey: String): List<Int> {
         val response = sendRequest(
             "$apiUrl/nodes/1/allocations",
@@ -175,7 +234,11 @@ class PterodactylClient(
         return freeAllocations
     }
 
-
+    /**
+     * Deletes a server by its ID.
+     * @param serverId The server UUID
+     * @return API response
+     */
     fun deleteServer(serverId: String): String {
         return sendRequest("$apiUrl/servers/$serverId", applicationApiKey, "DELETE")
     }

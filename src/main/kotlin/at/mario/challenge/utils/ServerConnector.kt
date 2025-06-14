@@ -8,25 +8,28 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
 
+/**
+ * Handles connecting players to Minecraft servers, checking server status, and managing player-server assignments.
+ */
 object ServerConnector {
+    /** Maps server ports to sets of player UUIDs currently assigned to them. */
     private val playersPerPort: MutableMap<Int, MutableSet<UUID>> = mutableMapOf()
 
+    /**
+     * Connects a player to a server by name. If the server is not online, retries after a delay.
+     * @param player The player to connect
+     * @param serverName The name of the server
+     */
     fun connect(player: Player, serverName: String) {
-        // Serververfügbarkeit prüfen
-        val isOnline = isServerOnline(ServerController.serverNameToPort[serverName] ?: return)
-
-        // Wenn der Server online ist, sende das Connect-Paket
+        val port = ServerController.serverNameToPort[serverName] ?: return
+        val isOnline = isServerOnline(port)
         if (isOnline) {
             val out = ByteStreams.newDataOutput().apply {
                 writeUTF("Connect")
                 writeUTF(serverName)
             }
-
-            Bukkit.getOnlinePlayers()
-                .forEach {
-                    it.sendPluginMessage(Main.instance, "BungeeCord", out.toByteArray())
-                    playersPerPort[ServerController.serverNameToPort[serverName]]!! -= it.uniqueId
-                }
+            player.sendPluginMessage(Main.instance, "BungeeCord", out.toByteArray())
+            playersPerPort[port]?.remove(player.uniqueId)
         } else {
             task(delay = 5) {
                 connect(player, serverName)
@@ -34,15 +37,19 @@ object ServerConnector {
         }
     }
 
+    /**
+     * Checks if a server is online, using either VPS or local config depending on environment.
+     * @param port The server port
+     * @return True if the server is online, false otherwise
+     */
     fun isServerOnline(port: Int): Boolean {
         if (Main.SERVER_RUNS_ON_VPS){
-            return PterodactylClient().getServerStatus(ServerController.serverUUIDs[port] ?: "not-used") =="running" ||
-                    PterodactylClient().getServerStatus(ServerController.serverUUIDs[port] ?: "not-used") == "starting"
+            val status = PterodactylClient().getServerStatus(ServerController.serverUUIDs[port] ?: "not-used")
+            return status == "running" || status == "starting"
         }
         if (serverDirectories[port]==null) {
-            serverDirectories[port] = serverDirectories[port] ?: return false
+            return false
         }
         return Config().config.getBoolean("serverstatus_${serverDirectories[port]?.absolutePath?.removePrefix(ServerController.BASE_PATH + "\\")}")
     }
 }
-

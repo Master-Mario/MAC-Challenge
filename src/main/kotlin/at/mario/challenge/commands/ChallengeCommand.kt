@@ -14,14 +14,20 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import org.bukkit.Bukkit
 
+/**
+ * Command for managing and controlling challenges. Allows opening GUIs, resetting, activating, and disabling challenges.
+ */
 class ChallengeCommand {
     val prefix = Main.prefix
+    /**
+     * The challenge command tree for challenge control.
+     */
     val challengeCommand = commandTree("challenge"){
-            playerExecutor {player, _ ->
-                MainGUI.open(player)
-                val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
-                player.playSound(sound)
-            }
+        playerExecutor {player, _ ->
+            MainGUI.open(player)
+            val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
+            player.playSound(sound)
+        }
         literalArgument("gui"){
             playerExecutor {player, _ -> ChallengeGUI.open(player) }
         }
@@ -35,7 +41,7 @@ class ChallengeCommand {
                 }
             }
             literalArgument("run-blocks"){
-                anyExecutor { _, _ ->
+                anyExecutor{ _, _ ->
                     for (player in Bukkit.getOnlinePlayers()) {
                         Config().add("run-randomizer.run-blocks-amount.${player.name}", 0.0)
                         player.sendMessage(prefix + cmp("Dein Run-Block wurde zurückgesetzt"))

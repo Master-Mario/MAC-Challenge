@@ -12,7 +12,14 @@ import dev.jorel.commandapi.kotlindsl.*
 import org.bukkit.Bukkit
 import kotlin.time.Duration
 
+/**
+ * Command for managing challenge attempts ("Trys").
+ * Allows starting, resetting, getting, and setting the number of attempts.
+ */
 class TryCommand {
+    /**
+     * The try command tree for managing attempts.
+     */
     val tryCommand = commandTree("try"){
         literalArgument("start") {
             anyExecutor { _, _ ->
@@ -42,6 +49,5 @@ class TryCommand {
                 }
             }
         }
-
     }
 }

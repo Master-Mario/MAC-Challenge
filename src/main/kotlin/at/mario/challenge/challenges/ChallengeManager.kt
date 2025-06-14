@@ -17,16 +17,30 @@ import org.bukkit.inventory.Inventory
 import java.io.File
 import java.util.UUID
 
+/**
+ * Manages challenge logic, including challenge list, timer end, and win logic.
+ * Handles player notifications and Mob Army Battle GUI on timer end.
+ */
 class ChallengeManager {
+    /** MiniMessage instance for formatting messages. */
     private var miniMessage = MiniMessage.miniMessage()
+    /** List of all challenge names. */
     var list : Collection<String>? = listOf()
+    /** Map of player UUIDs to their entities. */
     var map : Map<UUID, Entity> = mapOf()
 
+    /**
+     * Initializes the challenge manager and populates the challenge list.
+     */
     init {
         for (challenges in Challenges.values()) {
             list = list!!.plus(challenges.nameString)
         }
     }
+
+    /**
+     * Called when the timer ends. Pauses the timer, notifies players, and opens the Mob Army Battle GUI if active.
+     */
     fun timerEnd() {
         Timer.win = true
         Timer.paused = true
@@ -43,8 +57,12 @@ class ChallengeManager {
             waveGuiHome.setItem(8, Utils().createItem(Material.LIME_DYE, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp("Fertig", KColors.LIME)))
             onlinePlayers.forEach { player ->  player.openInventory(waveGuiHome) }
         }
-
     }
+
+    /**
+     * Called when a win condition is met. Pauses the timer, notifies players, and resets attempts if Mob Army Battle is active.
+     * @param what The win reason or description
+     */
     fun win(what: String) {
         Timer.win = true
         Timer.paused = true

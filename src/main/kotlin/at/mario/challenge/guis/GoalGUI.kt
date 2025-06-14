@@ -12,7 +12,14 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
+/**
+ * GUI for selecting a goal. Displays all available goals and their status.
+ */
 object GoalGUI {
+    /**
+     * Opens the goal selection GUI for the given player.
+     * @param player The player to open the GUI for
+     */
     fun open(player: HumanEntity) {
         val inventory: Inventory = Bukkit.createInventory(null, 27, "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle ein Ziel")
         val item1 = ItemStack(Material.GRAY_STAINED_GLASS_PANE)

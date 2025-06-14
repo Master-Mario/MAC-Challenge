@@ -11,7 +11,7 @@ import dev.jorel.commandapi.kotlindsl.literalArgument
 import dev.jorel.commandapi.kotlindsl.stringArgument
 import org.bukkit.Bukkit
 
-class MAB_Command {
+class MABCommand {
     val mab_command = commandTree("mobarmybattle") {
         literalArgument("team1"){
             stringArgument("Player"){

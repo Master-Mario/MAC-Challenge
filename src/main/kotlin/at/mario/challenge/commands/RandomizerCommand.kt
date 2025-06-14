@@ -12,7 +12,14 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 
+/**
+ * Command for generating and shuffling randomizer mappings for items, blocks, and entities.
+ * Supports per-player and global randomization for items, blocks, and entities.
+ */
 class RandomizerCommand {
+    /**
+     * The randomizer command tree for generating randomizer mappings.
+     */
     val mab_command = commandTree("randomizer") {
         literalArgument("shuffle"){
             literalArgument("per-player") {

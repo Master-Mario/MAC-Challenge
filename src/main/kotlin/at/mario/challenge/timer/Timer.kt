@@ -17,12 +17,23 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
+/**
+ * Timer object for managing the challenge timer, including pause, resume, display, and win logic.
+ * Handles timer state, action bar updates, and integration with challenges and config.
+ */
 object Timer {
+    /** MiniMessage instance for formatting messages. */
     private val miniMessage = MiniMessage.miniMessage()
+    /** Current timer value. */
     private var time = Duration.ZERO
+    /** Whether the timer display is hidden. */
     var hidden = true
+    /** Whether the win condition has been reached. */
     var win = false
 
+    /**
+     * Whether the timer is paused. Setting this property triggers broadcast and event logic.
+     */
     var paused = true
         set(value) {
             if (value && !win) broadcast(cmp("Der Timer wurde ") + cmp("pausiert", NamedTextColor.RED))
@@ -37,12 +48,20 @@ object Timer {
             }
             field = value
         }
+    /** Offset for gradient animation in timer display. */
     private var offset = 0.0
 
+    /**
+     * Sets the timer to a specific duration.
+     * @param duration The duration to set
+     */
     fun setTime(duration: Duration){
-        time = duration;
+        time = duration
     }
 
+    /**
+     * Displays the timer in the action bar for all online players.
+     */
     private fun displayTimer() {
         val display = if (paused) miniMessage.deserialize("<gray>Timer pausiert</gray> <gray>-</gray> <red>$time</red>") else miniMessage.deserialize("<gradient:#ff1e00:#ff4400:$offset><b>$time")
         if (!hidden)
@@ -51,6 +70,9 @@ object Timer {
             }
     }
 
+    /**
+     * Schedules the timer update and display tasks.
+     */
     private fun schedule() {
         task (false, 0, 1){
             offset += 0.05
@@ -72,9 +94,18 @@ object Timer {
             Config().save()
         }
     }
+
+    /**
+     * Gets the current timer value.
+     * @return The current timer duration
+     */
     fun getTime(): Duration {
         return time
     }
+
+    /**
+     * Initializes the timer and schedules tasks on object creation.
+     */
     init {
         schedule()
     }

@@ -9,7 +9,13 @@ import dev.jorel.commandapi.kotlindsl.textArgument
 import net.kyori.adventure.text.format.NamedTextColor
 import kotlin.time.Duration
 
+/**
+ * Command for controlling the challenge timer. Allows pausing, resuming, hiding, resetting, and setting the timer.
+ */
 class TimerCommand {
+    /**
+     * The timer command tree for timer control.
+     */
     val timerCommand = commandTree("timer"){
         literalArgument("pause"){
             anyExecutor { _, _ ->  Timer.paused = true}

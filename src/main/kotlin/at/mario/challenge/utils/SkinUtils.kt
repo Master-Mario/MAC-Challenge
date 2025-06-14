@@ -5,7 +5,14 @@ import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
 import java.util.*
 
+/**
+ * Utility object for applying custom Minecraft skins to players using Mojang texture and signature data.
+ */
 object SkinUtils {
+    /**
+     * Applies the MASTERMARIOSuit skin to the given player.
+     * @param player The player to apply the skin to
+     */
     fun applySkinMASTERMARIOSuit(player: Player) {
         task(false, 0,0,1) {
             val texture = "ewogICJ0aW1lc3RhbXAiIDogMTc0NTU5NTkyNzI5NywKICAicHJvZmlsZUlkIiA6ICIxNzRjZmRiNGEzY2I0M2I1YmZjZGU0MjRjM2JiMmM2ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJtYXJhZWwxOCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84YTA4OTk1ODA0OWYyMDQ2OWQ0ZmFkMWNiMjZjYmY0OWNmNDk4MWM2MzA2MGNmNjk3MmExMDQ2YzE2MTAwM2YiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ=="
@@ -16,13 +23,17 @@ object SkinUtils {
             profile.properties.put("textures", Property("textures", texture, signature))
 
             val entityPlayer = craftPlayer.handle
-            val field = entityPlayer::class.java.getDeclaredField("bH") // Für 1.20.1!
+            val field = entityPlayer::class.java.getDeclaredField("bH") // For 1.20.1
             field.isAccessible = true
             field.set(entityPlayer, profile)
 
-            craftPlayer.updateCommands() // z.B. kleine Aktionen zum Reload
+            craftPlayer.updateCommands() // e.g. small actions to reload
         }
     }
+    /**
+     * Applies the MASTERMARIONormal skin to the given player.
+     * @param player The player to apply the skin to
+     */
     fun applySkinMASTERMARIONormal(player: Player) {
         task(false, 0,0,1) {
             val texture = "ewogICJ0aW1lc3RhbXAiIDogMTc0NTU5NjI0MDc3OSwKICAicHJvZmlsZUlkIiA6ICIwNDg2YWUwMWI4Y2I0OWUzODMyZDcwOTNmMWJlNzI3NyIsCiAgInByb2ZpbGVOYW1lIiA6ICJfcGFrbWFuXyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS85NzNjYWM1YTg3OGQzOTEzYzYzYTU1ODE5MjM4NTc5YTA5NGJiNDY5NDM4N2JkMTljYTFhYmQzMTBlYTExMWQ3IgogICAgfQogIH0KfQ=="
@@ -33,11 +44,11 @@ object SkinUtils {
             profile.properties.put("textures", Property("textures", texture, signature))
 
             val entityPlayer = craftPlayer.handle
-            val field = entityPlayer::class.java.getDeclaredField("bH") // Für 1.20.1!
+            val field = entityPlayer::class.java.getDeclaredField("bH") // For 1.20.1
             field.isAccessible = true
             field.set(entityPlayer, profile)
 
-            craftPlayer.updateCommands() // z.B. kleine Aktionen zum Reload
+            craftPlayer.updateCommands() // e.g. small actions to reload
         }
     }
 }
