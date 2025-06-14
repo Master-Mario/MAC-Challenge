@@ -30,7 +30,7 @@ class Config {
         val dir = File("plugins/ChallengePlugin")
 
         if (!dir.exists()){
-            Bukkit.getConsoleSender().sendMessage("Creating Config...")
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_create"))
             dir.mkdir()
         }
 
@@ -41,6 +41,7 @@ class Config {
             try {
                 file.createNewFile()
             }catch (e: IOException){
+                Bukkit.getConsoleSender().sendMessage(Lang.translate("config_file_create_error", file.name))
                 e.printStackTrace()
             }
         }
@@ -48,6 +49,7 @@ class Config {
             try {
                 killsFile.createNewFile()
             }catch (e: IOException){
+                Bukkit.getConsoleSender().sendMessage(Lang.translate("config_file_create_error", killsFile.name))
                 e.printStackTrace()
             }
         }
@@ -55,6 +57,7 @@ class Config {
             try {
                 randomizerFile.createNewFile()
             }catch (e: IOException){
+                Bukkit.getConsoleSender().sendMessage(Lang.translate("config_file_create_error", randomizerFile.name))
                 e.printStackTrace()
             }
         }
@@ -74,6 +77,7 @@ class Config {
         try {
             killConfig.save(killsFile)
         } catch (e: IOException) {
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", killsFile.name))
             e.printStackTrace()
         }
     }
@@ -88,6 +92,7 @@ class Config {
         try {
             config.save(file)
         } catch (e: IOException) {
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
             e.printStackTrace()
         }
     }
@@ -102,6 +107,7 @@ class Config {
         try {
             randomizerConfig.save(randomizerFile)
         } catch (e: IOException) {
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", randomizerFile.name))
             e.printStackTrace()
         }
     }
@@ -116,6 +122,7 @@ class Config {
         try {
             config.save(file)
         } catch (e: IOException) {
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
             e.printStackTrace()
         }
     }
@@ -130,6 +137,7 @@ class Config {
         try {
             config.save(file)
         } catch (e: IOException) {
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
             e.printStackTrace()
         }
     }
@@ -144,6 +152,7 @@ class Config {
         try {
             config.save(file)
         } catch (e: IOException) {
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
             e.printStackTrace()
         }
     }
@@ -155,6 +164,7 @@ class Config {
         try {
             config.save(file)
         }catch (e: IOException){
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
             e.printStackTrace()
         }
     }
@@ -167,6 +177,7 @@ class Config {
         try {
             killsFile.createNewFile()
         }catch (e: IOException){
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_file_create_error", killsFile.name))
             e.printStackTrace()
         }
         this.killConfig = YamlConfiguration.loadConfiguration(killsFile)

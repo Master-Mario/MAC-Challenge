@@ -52,8 +52,13 @@ class ConfigManager(private val configFilePath: String) {
      * Saves the current config data to the YAML file.
      */
     private fun saveConfig() {
-        File(configFilePath).outputStream().use { output ->
-            yaml.dump(configData, output.writer())
+        try {
+            File(configFilePath).outputStream().use { output ->
+                yaml.dump(configData, output.writer())
+            }
+        } catch (e: Exception) {
+            println(Lang.translate("config_save_error", configFilePath))
+            e.printStackTrace()
         }
     }
 

@@ -1,6 +1,8 @@
 package at.mario.challenge.guis
 
 import at.mario.challenge.challenges.Challenges
+import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.event.listen
@@ -28,7 +30,7 @@ object SettingsGUI {
      */
     fun open(player: HumanEntity) {
         val inventory: Inventory =
-            Bukkit.createInventory(null, 27, "${ChatColor.BOLD}${ChatColor.DARK_GRAY}Setze die Einstellungen")
+            Bukkit.createInventory(null, 27, Lang.translate("settings_title"))
         val item1 = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
         val meta1: ItemMeta = item1.itemMeta!!
         meta1.displayName(cmp(""))
@@ -47,7 +49,7 @@ object SettingsGUI {
                 glow = false,
                 unbreakable = false,
                 false,
-                cmp("Zurück")
+                cmp(Lang.translate("back"))
             )
         )
         inventory.setItem(10, item1)
@@ -61,8 +63,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("Schwierigkeitsgrad", KColors.GOLD, true),
-                    lines = listOf(cmp("Aktuell: ", KColors.GRAY) + cmp("Friedlich", KColors.LIGHTGREEN))
+                    cmp(Lang.translate("difficulty"), KColors.GOLD, true),
+                    lines = listOf(cmp(Lang.translate("current"), KColors.GRAY) + cmp(Lang.translate("peaceful"), KColors.LIGHTGREEN))
                 )
             )
         } else if (difficulty == Difficulty.EASY) {
@@ -73,8 +75,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("Schwierigkeitsgrad", KColors.GOLD, true),
-                    lines = listOf(cmp("Aktuell: ", KColors.GRAY) + cmp("Leicht", KColors.LIGHTYELLOW))
+                    cmp(Lang.translate("difficulty"), KColors.GOLD, true),
+                    lines = listOf(cmp(Lang.translate("current"), KColors.GRAY) + cmp(Lang.translate("easy"), KColors.LIGHTYELLOW))
                 )
             )
         }else if (difficulty == Difficulty.NORMAL) {
@@ -85,8 +87,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("Schwierigkeitsgrad", KColors.GOLD, true),
-                    lines = listOf(cmp("Aktuell: ", KColors.GRAY) + cmp("Normal", KColors.GOLDENROD))
+                    cmp(Lang.translate("difficulty"), KColors.GOLD, true),
+                    lines = listOf(cmp(Lang.translate("current"), KColors.GRAY) + cmp(Lang.translate("normal"), KColors.GOLDENROD))
                 )
             )
 
@@ -98,8 +100,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("Schwierigkeitsgrad", KColors.GOLD, true),
-                    lines = listOf(cmp("Aktuell: ", KColors.GRAY) + cmp("Schwer", KColors.ORANGERED))
+                    cmp(Lang.translate("difficulty"), KColors.GOLD, true),
+                    lines = listOf(cmp(Lang.translate("current"), KColors.GRAY) + cmp(Lang.translate("hard"), KColors.ORANGERED))
                 )
             )
         }
@@ -116,8 +118,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("PVP", KColors.TOMATO, true),
-                    lines = listOf(cmp("Status: ", KColors.GRAY) + cmp("Aktiviert", KColors.LIGHTGREEN))
+                    cmp(Lang.translate("pvp"), KColors.TOMATO, true),
+                    lines = listOf(cmp(Lang.translate("status"), KColors.GRAY) + cmp(Lang.translate("enabled"), KColors.LIGHTGREEN))
                 )
             )
         }else {
@@ -128,8 +130,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("PVP", KColors.TOMATO, true),
-                    lines = listOf(cmp("Status: ", KColors.GRAY) + cmp("Deaktiviert", KColors.ORANGERED))
+                    cmp(Lang.translate("pvp"), KColors.TOMATO, true),
+                    lines = listOf(cmp(Lang.translate("status"), KColors.GRAY) + cmp(Lang.translate("disabled"), KColors.ORANGERED))
                 )
             )
         }
@@ -141,8 +143,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("Natürliche Regeneration", KColors.AZURE, true),
-                    lines = listOf(cmp("Status: ", KColors.GRAY) + cmp("Aktiviert", KColors.LIGHTGREEN))
+                    cmp(Lang.translate("natural_regen"), KColors.AZURE, true),
+                    lines = listOf(cmp(Lang.translate("status"), KColors.GRAY) + cmp(Lang.translate("enabled"), KColors.LIGHTGREEN))
                 )
             )
         } else {
@@ -153,8 +155,8 @@ object SettingsGUI {
                     glow = false,
                     unbreakable = false,
                     false,
-                    cmp("Natürliche Regeneration", KColors.AZURE, true),
-                    lines = listOf(cmp("Status: ", KColors.GRAY) + cmp("Deaktiviert", KColors.ORANGERED))
+                    cmp(Lang.translate("natural_regen"), KColors.AZURE, true),
+                    lines = listOf(cmp(Lang.translate("status"), KColors.GRAY) + cmp(Lang.translate("disabled"), KColors.ORANGERED))
                 )
             )
         }
@@ -166,8 +168,8 @@ object SettingsGUI {
                 glow = false,
                 unbreakable = false,
                 false,
-                cmp("Sichtweite", KColors.GAINSBORO, true),
-                lines = listOf(cmp("Aktuell: ", KColors.GRAY) + cmp(Bukkit.getWorld("world")!!.viewDistance.toString(), KColors.LIGHTGREEN))
+                cmp(Lang.translate("view_distance"), KColors.GAINSBORO, true),
+                lines = listOf(cmp(Lang.translate("current"), KColors.GRAY) + cmp(Bukkit.getWorld("world")!!.viewDistance.toString(), KColors.LIGHTGREEN))
             )
         )
 
@@ -178,8 +180,21 @@ object SettingsGUI {
                 glow = false,
                 unbreakable = false,
                 false,
-                cmp("Simulationsdistanz", KColors.PURPLE, true),
-                lines = listOf(cmp("Aktuell: ", KColors.GRAY) + cmp(Bukkit.getWorld("world")!!.simulationDistance.toString(), KColors.LIGHTGREEN))
+                cmp(Lang.translate("simulation_distance"), KColors.PURPLE, true),
+                lines = listOf(cmp(Lang.translate("current"), KColors.GRAY) + cmp(Bukkit.getWorld("world")!!.simulationDistance.toString(), KColors.LIGHTGREEN))
+            )
+        )
+
+        inventory.addItem(
+            Utils().createItem(
+                Material.BOOK,
+                1,
+                glow = false,
+                unbreakable = false,
+                false,
+                cmp(Lang.translate("language"), KColors.LIGHTBLUE, true),
+                lines = listOf(cmp(Lang.translate("language_change_hint"), KColors.GRAY),
+                    cmp(Lang.translate("current"), KColors.GRAY) + cmp(Config().config.getString("language") ?: "de", KColors.LIGHTGREEN))
             )
         )
 

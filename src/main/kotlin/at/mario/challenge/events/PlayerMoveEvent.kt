@@ -4,6 +4,7 @@ import at.mario.challenge.Main
 import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -52,7 +53,7 @@ object PlayerMoveEvent {
         if (Challenges.RUN_RANDOMIZER.active) {
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!Main.bossBars.contains(player)) {
-                    Main.bossBars[player] = Bukkit.createBossBar("Lauf-Randomizer", BarColor.GREEN, BarStyle.SOLID)
+                    Main.bossBars[player] = Bukkit.createBossBar(Lang.translate("run_randomizer_bossbar"), BarColor.GREEN, BarStyle.SOLID)
                 }
                 val runBlocks = Config().config.getDouble("run-randomizer.run-blocks-amount.${player.name}")
                 Main.bossBars[player]!!.progress = Math.clamp(runBlocks/Config().config.getDouble("run-randomizer.anzahl-der-distanz"), 0.01, 0.99)

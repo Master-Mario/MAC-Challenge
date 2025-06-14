@@ -128,7 +128,7 @@ class PterodactylClient(
         val pluginBytes = pluginFile.readBytes()
 
         // Create the plugins directory if it does not exist
-        val createDirJson = """{ "root": "/", "files": ["plugins"] }"""
+        val createDirJson = """{ \"root\": \"/\", \"files\": [\"plugins\"] }"""
         sendRequest("$apiUrl/servers/$serverId/files/create-folder", clientApiKey, "POST", createDirJson)
 
         val url = URL("$apiUrl/servers/$serverId/files/write?file=/plugins/ChallengePLUGIN.jar&encoding=base64")
@@ -139,14 +139,14 @@ class PterodactylClient(
         connection.doOutput = true
 
         val encoded = java.util.Base64.getEncoder().encodeToString(pluginBytes)
-        val body = """{ "content": "$encoded" }"""
+        val body = """{ \"content\": \"$encoded\" }"""
 
         connection.outputStream.use { it.write(body.toByteArray()) }
 
         val responseCode = connection.responseCode
         val response = connection.inputStream.bufferedReader().readText()
 
-        server.consoleSender.sendMessage("📦 Plugin ChallengePLUGIN hochgeladen (Code $responseCode): $response")
+        server.consoleSender.sendMessage(Lang.translate("plugin_upload_success", responseCode, response))
     }
 
     /**
@@ -159,7 +159,7 @@ class PterodactylClient(
         // 1. Find available allocation
         val allocations = getAvailableAllocations(apiUrl, applicationApiKey)
         val selectedAllocation = allocations.firstOrNull()
-            ?: return "Keine freien Allocations verfügbar!"
+            ?: return Lang.translate("no_free_allocations")
 
         // 2. Prepare server creation body
         val body = """

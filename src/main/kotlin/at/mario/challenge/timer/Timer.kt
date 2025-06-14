@@ -1,10 +1,12 @@
 package at.mario.challenge.timer
 
+import at.mario.challenge.Main
 import at.mario.challenge.challenges.Battles
 import at.mario.challenge.challenges.ChallengeManager
 import at.mario.challenge.challenges.Goals
 import at.mario.challenge.utils.Config
 import at.mario.challenge.mab.MABServerManagement
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.extensions.broadcast
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -36,8 +38,8 @@ object Timer {
      */
     var paused = true
         set(value) {
-            if (value && !win) broadcast(cmp("Der Timer wurde ") + cmp("pausiert", NamedTextColor.RED))
-            else if (!win) broadcast(cmp("Der Timer wurde ") + cmp("gestartet", NamedTextColor.GREEN))
+            if (value && !win) broadcast(Main.prefix + cmp(Lang.translate("timer_paused")) + cmp(Lang.translate("timer_paused_state"), NamedTextColor.RED))
+            else if (!win) broadcast(Main.prefix + cmp(Lang.translate("timer_resumed")) + cmp(Lang.translate("timer_resumed_state"), NamedTextColor.GREEN))
             else if(!value) win = false
             if (!value && Battles.MOB_ARMY_BATTLE.active) {
                 for (onlinePlayer in Bukkit.getOnlinePlayers()) {

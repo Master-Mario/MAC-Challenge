@@ -20,7 +20,7 @@ class MABCommand {
                     val player = Bukkit.getPlayer(args[0] as String)
                     Main.mabTeam2.remove(player!!)
                     if (!Main.mabTeam1.contains(player)) Main.mabTeam1.add(player)
-                    Bukkit.broadcast(cmp("${player.name} ist dem Team 1 beigetreten", KColors.GREEN))
+                    Bukkit.broadcast(cmp(at.mario.challenge.utils.Lang.translate("joined_team1", player.name), KColors.GREEN))
                     Config().addString(player.name + ".team", "Team1")
                 }
             }
@@ -32,7 +32,7 @@ class MABCommand {
                     val player = Bukkit.getPlayer(args[0] as String)
                     Main.mabTeam1.remove(player!!)
                     if (!Main.mabTeam2.contains(player)) Main.mabTeam2.add(player)
-                    Bukkit.broadcast(cmp("${player.name} ist dem Team 2 beigetreten", KColors.GREEN))
+                    Bukkit.broadcast(cmp(at.mario.challenge.utils.Lang.translate("joined_team2", player.name), KColors.GREEN))
                     Config().addString(player.name + ".team", "Team2")
                 }
             }

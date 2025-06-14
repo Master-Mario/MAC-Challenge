@@ -1,5 +1,6 @@
 package at.mario.challenge.commands
 
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import dev.jorel.commandapi.commandsenders.BukkitProxiedCommandSender
@@ -26,7 +27,7 @@ class ResetCommand {
                     return@anyExecutor
                 }
                 for (onlinePlayer in Bukkit.getOnlinePlayers()) {
-                    onlinePlayer.kick(cmp("${executer.name} hat die Welt zurückgesetzt", KColors.RED))
+                    onlinePlayer.kick(cmp(Lang.translate("reset_kick_message", executer.name), KColors.RED))
                 }
                 reset = true
                 Bukkit.spigot().restart()

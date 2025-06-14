@@ -6,6 +6,7 @@ import at.mario.challenge.challenges.ChallengeManager
 import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.guis.MainGUI
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
@@ -36,7 +37,7 @@ class ChallengeCommand {
                 anyExecutor { _, _ ->
                     for (player in Bukkit.getOnlinePlayers()) {
                         Config().addInt("sequenz.next", 0)
-                        player.sendMessage(prefix + cmp("Der nächste Spieler wurde zurückgesetzt"))
+                        player.sendMessage(prefix + cmp(Lang.translate("reset_next_player")))
                     }
                 }
             }
@@ -44,7 +45,7 @@ class ChallengeCommand {
                 anyExecutor{ _, _ ->
                     for (player in Bukkit.getOnlinePlayers()) {
                         Config().add("run-randomizer.run-blocks-amount.${player.name}", 0.0)
-                        player.sendMessage(prefix + cmp("Dein Run-Block wurde zurückgesetzt"))
+                        player.sendMessage(prefix + cmp(Lang.translate("reset_run_block")))
                     }
                 }
             }
@@ -59,9 +60,9 @@ class ChallengeCommand {
                                 challenge.active = true
                                 Config().addBoolean(challenge.nameString, true)
                                 Config().save()
-                                Bukkit.broadcast(prefix + cmp(("Die \"" + challenge.nameString + "\" Challenge wurde aktiviert")))
+                                Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_activated", challenge.nameString)))
                             } else
-                                Bukkit.broadcast(prefix + cmp(("Die \"" + challenge.nameString + "\" Challenge ist bereits aktiviert")))
+                                Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_already_activated", challenge.nameString)))
                     }
                 }
             }
@@ -76,9 +77,9 @@ class ChallengeCommand {
                                 challenge.active = false
                                 Config().addBoolean(challenge.nameString, false)
                                 Config().save()
-                                Bukkit.broadcast(prefix + cmp(("Die \"" + challenge.nameString + "\" Challenge wurde deaktiviert")))
+                                Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_deactivated", challenge.nameString)))
                             } else
-                                Bukkit.broadcast(prefix + cmp(("Die \"" + challenge.nameString + "\" Challenge ist bereits deaktiviert")))
+                                Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_already_deactivated", challenge.nameString)))
                     }
                 }
             }

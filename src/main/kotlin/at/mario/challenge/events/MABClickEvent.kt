@@ -3,6 +3,7 @@ package at.mario.challenge.events
 import at.mario.challenge.Main
 import at.mario.challenge.utils.Config
 import at.mario.challenge.utils.Utils
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -20,7 +21,7 @@ object MABClickEvent {
     private val config = Config()
     private val utils = Utils()
 
-    private val waveGuiHome = Bukkit.createInventory(null, 9, "${ChatColor.DARK_RED}Mob-Army-Waves").apply {
+    private val waveGuiHome = Bukkit.createInventory(null, 9, Lang.translate("mab_waves_title")).apply {
         setItem(
             2,
             utils.createItem(
@@ -29,7 +30,7 @@ object MABClickEvent {
                 glow = false,
                 unbreakable = true,
                 hideUnbreakable = true,
-                cmp("Wave 1", KColors.ORANGERED)
+                cmp(Lang.translate("mab_wave1"), KColors.ORANGERED)
             )
         )
         setItem(
@@ -40,7 +41,7 @@ object MABClickEvent {
                 glow = false,
                 unbreakable = true,
                 hideUnbreakable = true,
-                cmp("Wave 2", KColors.ORANGERED)
+                cmp(Lang.translate("mab_wave2"), KColors.ORANGERED)
             )
         )
         setItem(
@@ -51,7 +52,7 @@ object MABClickEvent {
                 glow = false,
                 unbreakable = true,
                 hideUnbreakable = true,
-                cmp("Wave 3", KColors.ORANGERED)
+                cmp(Lang.translate("mab_wave3"), KColors.ORANGERED)
             )
         )
         setItem(

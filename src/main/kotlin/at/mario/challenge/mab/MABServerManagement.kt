@@ -28,7 +28,7 @@ class MABServerManagement(
         val battleServerId = parseServerId(battleServerResponse)
         val team = Team(teamName, farmingServerId, battleServerId)
         teamList.add(team)
-        println("Team $teamName servers created: Farming-Server ID = $farmingServerId, Battle-Server ID = $battleServerId")
+        println(at.mario.challenge.utils.Lang.translate("team_servers_created", teamName, farmingServerId, battleServerId))
     }
 
     /**

@@ -3,6 +3,7 @@ package at.mario.challenge.events
 import at.mario.challenge.Main
 import at.mario.challenge.challenges.Randomizer
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -31,7 +32,7 @@ object ChestGenerationEvent {
                         it.loot.removeAt(i)
                         it.loot[i] = ItemStack(Material.valueOf(Config().randomizerConfig.getString("randomizer.everyone." + it.loot[i].type.name)!!), it.loot[i].amount)
                     }else{
-                        Bukkit.broadcast(Main.prefix + cmp("${it.loot[i].type.name} hat keinen Drop definiert!"))
+                        Bukkit.broadcast(Main.prefix + cmp(Lang.translate("entity_no_drop_defined", it.loot[i].type.name)))
                         it.isCancelled = true
                     }
                 }
@@ -49,7 +50,7 @@ object ChestGenerationEvent {
                             it.loot[i].amount
                         )
                     } else {
-                        Bukkit.broadcast(Main.prefix + cmp("${it.loot[i].type.name} hat keinen Drop definiert!"))
+                        Bukkit.broadcast(Main.prefix + cmp(Lang.translate("entity_no_drop_defined", it.loot[i].type.name)))
                         it.isCancelled = true
                     }
                 }

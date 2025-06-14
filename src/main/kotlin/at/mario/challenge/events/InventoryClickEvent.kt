@@ -1,5 +1,6 @@
 package at.mario.challenge.events
 
+import at.mario.challenge.Main
 import at.mario.challenge.challenges.Battles
 import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.challenges.Goals
@@ -8,6 +9,7 @@ import at.mario.challenge.guis.*
 import at.mario.challenge.guis.ChallengeGUI.open
 import at.mario.challenge.guis.ChallengeGUI.playerPages
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -40,29 +42,29 @@ object InventoryClickEvent {
         val player = it.whoClicked as Player
         val title = it.view.title
         // Prevent item movement in all custom GUIs
-        if (title.contains("Hauptmenü") || title.contains("Wähle eine Challenge") || title.contains("Wähle ein Ziel") || title.contains("Wähle einen Battle-Modus") || title.contains("Wähle einen Randomizer") || title.contains("Setze die Einstellungen") || title.contains("Mob-Army-Waves") || title.contains("Wave")) {
+        if (title.contains(Lang.translate("main_menu_title")) || title.contains(Lang.translate("challenge_menu_title")) || title.contains(Lang.translate("goal_menu_title")) || title.contains(Lang.translate("battle_menu_title")) || title.contains(Lang.translate("randomizer_title")) || title.contains(Lang.translate("settings_title")) || title.contains(Lang.translate("mab_waves_title")) || title.contains(Lang.translate("mab_wave1")) || title.contains(Lang.translate("mab_wave2")) || title.contains(Lang.translate("mab_wave3"))) {
             it.isCancelled = true
         }
         // Navigation logic for GUIs
-        if (title.contains("Hauptmenü")) {
+        if (title.contains(Lang.translate("main_menu_title"))) {
             when (it.currentItem?.itemMeta?.displayName()?.plainText()) {
-                "§d§lZiele" -> GoalGUI.open(it.whoClicked)
-                "§b§lChallenges" -> ChallengeGUI.open(it.whoClicked)
-                "§a§lBattles" -> BattleGUI.open(it.whoClicked)
-                "§c§lSettings" -> SettingsGUI.open(it.whoClicked)
+                "§d§l" + Lang.translate("goals") -> GoalGUI.open(it.whoClicked)
+                "§b§l" + Lang.translate("challenges") -> ChallengeGUI.open(it.whoClicked)
+                "§a§l" + Lang.translate("battles") -> BattleGUI.open(it.whoClicked)
+                "§c§l" + Lang.translate("settings") -> SettingsGUI.open(it.whoClicked)
             }
-        } else if (title.contains("Wähle eine Challenge")) {
+        } else if (title.contains(Lang.translate("challenge_menu_title"))) {
             if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
-        } else if (title.contains("Wähle ein Ziel")) {
+        } else if (title.contains(Lang.translate("goal_menu_title"))) {
             if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
-        } else if (title.contains("Wähle einen Battle-Modus")) {
+        } else if (title.contains(Lang.translate("battle_menu_title"))) {
             if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
-        } else if (title.contains("Wähle einen Randomizer")) {
+        } else if (title.contains(Lang.translate("randomizer_title"))) {
             if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
-        } else if (title.contains("Setze die Einstellungen")) {
+        } else if (title.contains(Lang.translate("settings_title"))) {
             if (it.currentItem?.type?.name == "DARK_OAK_DOOR") MainGUI.open(it.whoClicked)
         }
-        if (it.view.title == "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle eine Challenge") {
+        if (it.view.title == Lang.translate("challenge_menu_title")) {
             it.isCancelled = true
             for (challenges in Challenges.values()) {
                 if (challenges.nameComponent == it.currentItem?.itemMeta?.name) {
@@ -88,47 +90,47 @@ object InventoryClickEvent {
                     player.playSound(sound)
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("§7< Vorherige Seite")) {
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("previous_page"))) {
                 val currentPage = playerPages[player.name] ?: 0
                 open(player, currentPage - 1)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
-            } else if (it.currentItem?.itemMeta?.name == cmp("§7Nächste Seite >")) {
+            } else if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("next_page"))) {
                 val currentPage = playerPages[player.name] ?: 0
                 open(player, currentPage + 1)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
             }
-            if (it.currentItem?.itemMeta?.name == cmp("Zurück")){
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("back"))){
                 MainGUI.open(player)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
             }
 
-        }else if(it.view.title == "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Hauptmenü") {
+        }else if(it.view.title == Lang.translate("main_menu_title")) {
             it.isCancelled = true
-            if (cmp("${ChatColor.BOLD}Challenges", KColors.LIGHTBLUE)== it.currentItem?.itemMeta?.name) {
+            if (cmp("${ChatColor.BOLD}" + Lang.translate("challenges"), KColors.LIGHTBLUE)== it.currentItem?.itemMeta?.name) {
                 ChallengeGUI.open(player)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
             }
-            if (cmp("${ChatColor.BOLD}Ziele", KColors.LIGHTPURPLE)== it.currentItem?.itemMeta?.name) {
+            if (cmp("${ChatColor.BOLD}" + Lang.translate("goals"), KColors.LIGHTPURPLE)== it.currentItem?.itemMeta?.name) {
                 GoalGUI.open(player)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
             }
-            if (cmp("${ChatColor.BOLD}Battles", KColors.LIGHTGREEN)== it.currentItem?.itemMeta?.name) {
+            if (cmp("${ChatColor.BOLD}" + Lang.translate("battles"), KColors.LIGHTGREEN)== it.currentItem?.itemMeta?.name) {
                 BattleGUI.open(player)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
             }
-            if (cmp("${ChatColor.BOLD}Settings", KColors.LIGHTCORAL)== it.currentItem?.itemMeta?.name) {
+            if (cmp("${ChatColor.BOLD}" + Lang.translate("settings"), KColors.LIGHTCORAL)== it.currentItem?.itemMeta?.name) {
                 SettingsGUI.open(player)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
 
             }
-        }else if (it.view.title == "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle ein Ziel"){
+        }else if (it.view.title == Lang.translate("goal_menu_title")){
             it.isCancelled = true
             for (goals in Goals.values()) {
                 if (goals.nameComponent == it.currentItem?.itemMeta?.name) {
@@ -146,12 +148,12 @@ object InventoryClickEvent {
                     GoalGUI.open(player)
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("Zurück")){
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("back"))){
                 MainGUI.open(player)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
             }
-        }else if (it.view.title == "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Setze die Einstellungen"){
+        }else if (it.view.title == Lang.translate("settings_title")){
             it.isCancelled = true
             if (it.currentItem?.type == Material.LIME_DYE){
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
@@ -178,10 +180,10 @@ object InventoryClickEvent {
                     world.difficulty = Difficulty.PEACEFUL
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("Natürliche Regeneration", KColors.AZURE, true)) {
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("natural_regen"), KColors.AZURE, true)) {
                 if (it.currentItem?.lore() == listOf(
-                        cmp("Status: ", KColors.GRAY) + cmp(
-                            "Aktiviert",
+                        cmp(Lang.translate("status"), KColors.GRAY) + cmp(
+                            Lang.translate("enabled"),
                             KColors.LIGHTGREEN
                         )
                     )
@@ -192,8 +194,8 @@ object InventoryClickEvent {
                         world.setGameRule(GameRule.NATURAL_REGENERATION, false)
                     }
                 } else if (it.currentItem?.lore() == listOf(
-                        cmp("Status: ", KColors.GRAY) + cmp(
-                            "Deaktiviert",
+                        cmp(Lang.translate("status"), KColors.GRAY) + cmp(
+                            Lang.translate("disabled"),
                             KColors.ORANGERED
                         )
                     )
@@ -205,7 +207,7 @@ object InventoryClickEvent {
                     }
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("Sichtweite", KColors.GAINSBORO, true)) {
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("view_distance"), KColors.GAINSBORO, true)) {
                 if (it.isLeftClick) {
                     for (world in Bukkit.getWorlds()) {
                         world.viewDistance += 1
@@ -223,7 +225,7 @@ object InventoryClickEvent {
                     player.playSound(sound)
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("Simulationsdistanz", KColors.PURPLE, true)) {
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("simulation_distance"), KColors.PURPLE, true)) {
                 if (it.isLeftClick){
                     for (world in Bukkit.getWorlds()) {
                         world.simulationDistance += 1
@@ -241,10 +243,10 @@ object InventoryClickEvent {
                     player.playSound(sound)
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("PVP", KColors.TOMATO, true)) {
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("pvp"), KColors.TOMATO, true)) {
                 if (it.currentItem?.lore() == listOf(
-                        cmp("Status: ", KColors.GRAY) + cmp(
-                            "Aktiviert",
+                        cmp(Lang.translate("status"), KColors.GRAY) + cmp(
+                            Lang.translate("enabled"),
                             KColors.LIGHTGREEN
                         )
                     )
@@ -256,8 +258,8 @@ object InventoryClickEvent {
                     }
                     Config().addBoolean("settings.pvp", false)
                 } else if (it.currentItem?.lore() == listOf(
-                        cmp("Status: ", KColors.GRAY) + cmp(
-                            "Deaktiviert",
+                        cmp(Lang.translate("status"), KColors.GRAY) + cmp(
+                            Lang.translate("disabled"),
                             KColors.ORANGERED
                         )
                     )
@@ -273,12 +275,23 @@ object InventoryClickEvent {
             Config().addInt("settings.view-distance", Bukkit.getWorld("world")?.viewDistance ?: 10)
             Config().addInt("settings.simulation-distance", Bukkit.getWorld("world")?.simulationDistance ?: 10)
             SettingsGUI.open(player)
-            if (it.currentItem?.itemMeta?.name == cmp("Zurück")){
+            if (it.currentItem?.type == Material.BOOK) {
+                val current = Config().config.getString("language") ?: "en"
+                val available = listOf("de", "en", "es")
+                val idx = available.indexOf(current)
+                val next = available[(idx + 1) % available.size]
+                Config().addString("language", next)
+                SettingsGUI.open(player)
+                player.sendMessage(Main.prefix + cmp(Lang.translate("language_changed", next), KColors.LIGHTPURPLE))
+                Bukkit.reload()
+                return@listen
+            }
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("back"))){
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
                 MainGUI.open(player)
             }
-        }else if (it.view.title == "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle einen Battle-Modus"){
+        }else if (it.view.title == Lang.translate("battle_menu_title")){
             it.isCancelled = true
             for (battles in Battles.values()) {
                 if (battles.nameComponent == it.currentItem?.itemMeta?.name) {
@@ -296,12 +309,12 @@ object InventoryClickEvent {
                     BattleGUI.open(player)
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("Zurück")){
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("back"))){
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
                 MainGUI.open(player)
             }
-        }else if (it.view.title == "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle einen Randomizer"){
+        }else if (it.view.title == Lang.translate("randomizer_title")){
             it.isCancelled = true
             for (randomizer in Randomizer.values()) {
                 if (randomizer.nameComponent == it.currentItem?.itemMeta?.name) {
@@ -319,7 +332,7 @@ object InventoryClickEvent {
                     RandomizerGUI.open(player)
                 }
             }
-            if (it.currentItem?.itemMeta?.name == cmp("Zurück")){
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("back"))){
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
                 ChallengeGUI.open(player)

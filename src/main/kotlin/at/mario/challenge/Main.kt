@@ -1,8 +1,5 @@
 package at.mario.challenge
 
-/**
- * Main class for the MAC Challenge plugin. Handles plugin lifecycle, configuration, and initialization of commands, events, and challenges.
- */
 import at.mario.challenge.events.MABClickEvent
 import at.mario.challenge.challenges.*
 import at.mario.challenge.commands.*
@@ -156,6 +153,10 @@ class Main : KPaper() {
         }
         if (!Config().config.contains("isReset")) {
             Config().addBoolean("isReset", false)
+            Config().save()
+        }
+        if (!Config().config.contains("language")) {
+            Config().addString("language", "en")
             Config().save()
         }
 

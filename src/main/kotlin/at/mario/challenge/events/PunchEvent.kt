@@ -3,6 +3,7 @@ package at.mario.challenge.events
 import at.mario.challenge.Main
 import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.kill
@@ -29,7 +30,7 @@ object PunchEvent {
                 val player = it.damageSource.causingEntity as Player
                 if (Config().config.getString("sequence._${Config().config.getInt("sequence.next")}_") != player.name){
                     it.isCancelled = true
-                    player.sendMessage(Main.prefix + cmp("Du bist nicht der Nächste!", de.miraculixx.kpaper.chat.KColors.RED))
+                    player.sendMessage(Main.prefix + cmp(Lang.translate("not_next_sequence"), de.miraculixx.kpaper.chat.KColors.RED))
                     player.health = 0.0
                     Bukkit.getOnlinePlayers().forEach { player ->
                         val sound = Sound.sound(Key.key("block.anvil.land"), Sound.Source.MASTER, 0.5f, 1f)

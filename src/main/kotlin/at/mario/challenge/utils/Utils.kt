@@ -48,7 +48,7 @@ class Utils {
         name: Component,
         lines: List<Component>
     ): ItemStack {
-        requireNotNull(type) { "Material type must not be null" }
+        requireNotNull(type) { Lang.translate("material_type_null") }
         val item = ItemStack(type, amount)
         val meta = item.itemMeta
         if (glow) {
@@ -83,7 +83,7 @@ class Utils {
         unbreakable: Boolean,
         hideUnbreakable: Boolean,
     ): ItemStack {
-        requireNotNull(type) { "Material type must not be null" }
+        requireNotNull(type) { Lang.translate("material_type_null") }
         val item = ItemStack(type, amount)
         val meta = item.itemMeta
         if (glow) {
@@ -120,7 +120,7 @@ class Utils {
         name: Component?,
         vararg lines: String
     ): ItemStack {
-        requireNotNull(type) { "Material type must not be null" }
+        requireNotNull(type) { Lang.translate("material_type_null") }
         val item = ItemStack(type, amount)
         val meta = item.itemMeta
         if (glow) {
@@ -147,7 +147,7 @@ class Utils {
      * @return The enchanted ItemStack
      */
     fun enchantItem(item: ItemStack, enchantment: Enchantment?, level: Int): ItemStack {
-        requireNotNull(enchantment) { "Enchantment must not be null" }
+        requireNotNull(enchantment) { Lang.translate("enchantment_null") }
         item.addUnsafeEnchantment(enchantment, level)
         return item
     }

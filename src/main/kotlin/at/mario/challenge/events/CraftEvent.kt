@@ -4,6 +4,7 @@ import at.mario.challenge.Main
 import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.challenges.Randomizer
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -38,7 +39,7 @@ object CraftEvent {
                 if (mapped != null) {
                     it.currentItem = ItemStack(Material.valueOf(mapped), it.currentItem!!.amount)
                 } else {
-                    Bukkit.broadcast(Main.prefix + cmp("${it.recipe.result.type.name} has no drop defined! Triggered by ${player.name}"));
+                    Bukkit.broadcast(Main.prefix + cmp(Lang.translate("craft_no_drop_defined", it.recipe.result.type.name, player.name)))
                     it.isCancelled = true
                 }
             }

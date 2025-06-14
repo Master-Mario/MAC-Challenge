@@ -2,6 +2,7 @@ package at.mario.challenge.challenges
 
 import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -46,15 +47,15 @@ class ChallengeManager {
         Timer.paused = true
 
         for (player in Bukkit.getOnlinePlayers()) {
-            player.sendTitlePart(TitlePart.TITLE, miniMessage.deserialize("<b><gradient:#ff4d00:#f7000c>Zeit vorbei"))
+            player.sendTitlePart(TitlePart.TITLE, miniMessage.deserialize(Lang.translate("timer_end_title")))
             player.playSound(player.location, Sound.ITEM_GOAT_HORN_SOUND_0, SoundCategory.MASTER, 4f, 1f)
         }
         if (Battles.MOB_ARMY_BATTLE.active){
             val waveGuiHome = Bukkit.createInventory(null, 9, "${ChatColor.DARK_RED}Mob-Army-Waves")
-            waveGuiHome.setItem(2, Utils().createItem(Material.DIAMOND_SWORD, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp("Wave 1", KColors.ORANGERED)))
-            waveGuiHome.setItem(4, Utils().createItem(Material.DIAMOND_SWORD, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp("Wave 2", KColors.ORANGERED)))
-            waveGuiHome.setItem(6, Utils().createItem(Material.DIAMOND_SWORD, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp("Wave 3", KColors.ORANGERED)))
-            waveGuiHome.setItem(8, Utils().createItem(Material.LIME_DYE, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp("Fertig", KColors.LIME)))
+            waveGuiHome.setItem(2, Utils().createItem(Material.DIAMOND_SWORD, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp(Lang.translate("mab_wave1"), KColors.ORANGERED)))
+            waveGuiHome.setItem(4, Utils().createItem(Material.DIAMOND_SWORD, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp(Lang.translate("mab_wave2"), KColors.ORANGERED)))
+            waveGuiHome.setItem(6, Utils().createItem(Material.DIAMOND_SWORD, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp(Lang.translate("mab_wave3"), KColors.ORANGERED)))
+            waveGuiHome.setItem(8, Utils().createItem(Material.LIME_DYE, 1, glow = false, unbreakable = true, hideUnbreakable = true, cmp(Lang.translate("done"), KColors.LIME)))
             onlinePlayers.forEach { player ->  player.openInventory(waveGuiHome) }
         }
     }
@@ -73,10 +74,10 @@ class ChallengeManager {
                 miniMessage.deserialize(
                     "<gray>-----------------------------------------</gray>\n" +
                             "\n" +
-                            " <gradient:#ff1e00:#ff4400:1>Challenge geschafft - $what\n" +
+                            " <gradient:#ff1e00:#ff4400:1>${Lang.translate("challenge_completed")} - $what\n" +
                             "\n" +
-                            " <gray>Timer pausiert - </gray><red>${Timer.getTime()}</red>\n" +
-                            " <gray>Versuche - </gray><red>${TrySystem().attempts}</red>\n" +
+                            " <gray>${Lang.translate("timer_paused_broadcast")} - </gray><red>${Timer.getTime()}</red>\n" +
+                            " <gray>${Lang.translate("attempts")} - </gray><red>${TrySystem().attempts}</red>\n" +
                             "\n" +
                             "<gray>-----------------------------------------</gray>"
                 )

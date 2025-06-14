@@ -1,5 +1,6 @@
 package at.mario.challenge.challenges
 
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -22,37 +23,37 @@ enum class Randomizer(
 ) {
     BLOCK_DROP_RANDOMIZER(
         Material.DIAMOND_PICKAXE,
-        cmp("Block Drop Randomizer", bold = true, color = KColors.ALICEBLUE),
+        cmp(Lang.translate("block_drop_randomizer"), bold = true, color = KColors.ALICEBLUE),
         "Block Drop Randomizer",
-        cmp("Die Blöcke droppen zufällige Items.", KColors.LIGHTGRAY),
+        cmp(Lang.translate("block_drop_randomizer_desc"), KColors.LIGHTGRAY),
         false
     ),
     CHEST_RANDOMIZER(
         Material.CHEST,
-        cmp("Kisten Randomizer", bold = true, color = KColors.SADDLEBROWN),
+        cmp(Lang.translate("chest_randomizer"), bold = true, color = KColors.SADDLEBROWN),
         "Kisten Randomizer",
-        cmp("Die Truhen haben zufällige Items.", KColors.LIGHTGRAY),
+        cmp(Lang.translate("chest_randomizer_desc"), KColors.LIGHTGRAY),
         false
     ),
     ENTITY_RANDOMIZER(
         Material.ZOMBIE_HEAD,
-        cmp("Entity Randomizer", bold = true, color = KColors.SEAGREEN),
+        cmp(Lang.translate("entity_randomizer"), bold = true, color = KColors.SEAGREEN),
         "Entity Randomizer",
-        cmp("Die Entities haben zufällige Drops.", KColors.LIGHTGRAY),
+        cmp(Lang.translate("entity_randomizer_desc"), KColors.LIGHTGRAY),
         false
     ),
     CRAFT_RANDOMIZER(
         Material.CRAFTING_TABLE,
-        cmp("Crafting Randomizer", bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("craft_randomizer"), bold = true, color = KColors.LIGHTPURPLE),
         "Crafting Randomizer",
-        cmp("Die Crafting Rezepte sind zufällig.", KColors.LIGHTGRAY),
+        cmp(Lang.translate("craft_randomizer_desc"), KColors.LIGHTGRAY),
         false
     ),
     PER_PLAYER(
         Material.PLAYER_HEAD,
-        cmp("Pro-Spieler Randomizer", bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("per_player_randomizer"), bold = true, color = KColors.LIGHTPURPLE),
         "Per Player Randomizer",
-        cmp("Die Items sind für jeden Spieler unterschiedlich.", KColors.LIGHTGRAY),
+        cmp(Lang.translate("per_player_randomizer_desc"), KColors.LIGHTGRAY),
         false
     );
 
@@ -64,12 +65,12 @@ enum class Randomizer(
         set(value) {
             if (isActive != value) {
                 isActive = value
-                val status = if (isActive) "${ChatColor.GREEN}aktiviert" else "${ChatColor.RED}deaktiviert"
+                val statusString = if (isActive) "§a"+Lang.translate("activated") else "§c"+Lang.translate("deactivated")
                 for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                     onlinePlayer.showTitle(
                         Title.title(
-                            cmp(nameString, KColors.RED) + cmp(" Modul", KColors.LIGHTGRAY),
-                            cmp("wurde $status", KColors.LIGHTGRAY)
+                            cmp(nameString, KColors.RED) + cmp(" "+Lang.translate("module"), KColors.LIGHTGRAY),
+                            cmp(Lang.translate("module_status", statusString), KColors.LIGHTGRAY)
                         )
                     )
                 }

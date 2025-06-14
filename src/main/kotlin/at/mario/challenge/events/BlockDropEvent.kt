@@ -5,6 +5,7 @@ import at.mario.challenge.challenges.Challenges
 import at.mario.challenge.challenges.Randomizer
 import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -55,7 +56,7 @@ object BlockDropEvent {
                         )
                     )
                 } else {
-                    Bukkit.broadcast(Main.prefix + cmp("${it.block.type.name} has no drop defined! Triggered by ${it.player.name}"));
+                    Bukkit.broadcast(Main.prefix + cmp(Lang.translate("block_no_drop_defined", it.block.type.name, it.player.name)))
                     it.isCancelled = true
                 }
             }

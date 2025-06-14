@@ -1,6 +1,7 @@
 package at.mario.challenge.guis
 
 import at.mario.challenge.challenges.Challenges
+import at.mario.challenge.utils.Lang
 import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -8,10 +9,7 @@ import de.miraculixx.kpaper.extensions.bukkit.plus
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 
 /**
  * GUI for selecting a challenge. Supports pagination and displays all available challenges and their status.
@@ -29,7 +27,7 @@ object ChallengeGUI {
         val challenges = Challenges.values()
         val maxPages = challenges.size / CHALLENGES_PER_PAGE
 
-        val inventory = Bukkit.createInventory(null, 27, "${org.bukkit.ChatColor.BOLD}${org.bukkit.ChatColor.DARK_GRAY}Wähle eine Challenge")
+        val inventory = Bukkit.createInventory(null, 27, Lang.translate("challenge_menu_title"))
         val filler = ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
             itemMeta = itemMeta?.apply { displayName(cmp("")) }
         }
@@ -39,16 +37,16 @@ object ChallengeGUI {
         for (i in inventory.size-9..inventory.size-1) inventory.setItem(i, filler)
 
         // Back button
-        inventory.setItem(9, Utils().createItem(Material.DARK_OAK_DOOR, 1, glow = false, unbreakable = false, false, cmp("Zurück")))
-        inventory.setItem(10, Utils().createItem(Material.STRUCTURE_VOID, 1, glow = false, unbreakable = false, false, cmp("Zurück")))
-        inventory.setItem(16, Utils().createItem(Material.STRUCTURE_VOID, 1, glow = false, unbreakable = false, false, cmp("Zurück")))
+        inventory.setItem(9, Utils().createItem(Material.DARK_OAK_DOOR, 1, glow = false, unbreakable = false, false, cmp(Lang.translate("back"))))
+        inventory.setItem(10, Utils().createItem(Material.STRUCTURE_VOID, 1, glow = false, unbreakable = false, false, cmp(Lang.translate("back"))))
+        inventory.setItem(16, Utils().createItem(Material.STRUCTURE_VOID, 1, glow = false, unbreakable = false, false, cmp(Lang.translate("back"))))
 
         // Navigation
         if (page > 0) {
-            inventory.setItem(9, Utils().createItem(Material.ARROW, 1, glow = false, unbreakable = false, false, cmp("§7< Vorherige Seite")))
+            inventory.setItem(9, Utils().createItem(Material.ARROW, 1, glow = false, unbreakable = false, false, cmp(Lang.translate("previous_page"))))
         }
         if (page < maxPages) {
-            inventory.setItem(17, Utils().createItem(Material.ARROW, 1, glow = false, unbreakable = false, false, cmp("§7Nächste Seite >")))
+            inventory.setItem(17, Utils().createItem(Material.ARROW, 1, glow = false, unbreakable = false, false, cmp(Lang.translate("next_page"))))
         }
 
         // Show challenges

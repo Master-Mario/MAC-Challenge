@@ -33,7 +33,7 @@ class RandomizerCommand {
                         }
                         for (material in Material.values()) {
                             for (player in Bukkit.getOnlinePlayers()) {
-                                Bukkit.broadcast(Main.prefix + cmp("Randomizing ${material.name} für ${player.name}"))
+                                Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_player", material.name, player.name)))
                                 Config().addRandomizer(
                                     "randomizer.${player.name}.${material.name}",
                                     everyMaterial.random()
@@ -94,7 +94,7 @@ class RandomizerCommand {
                             }
                         }
                         for (material in Material.values()) {
-                            Bukkit.broadcast(Main.prefix + cmp("Randomizing ${material.name} für alle Spieler"))
+                            Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_everyone", material.name)))
                             Config().addRandomizer(
                                 "randomizer.everyone.${material.name}",
                                 everyMaterial.random()
@@ -112,7 +112,7 @@ class RandomizerCommand {
                         }
                         for (material in Material.values()) {
                             if (material.isBlock) {
-                                Bukkit.broadcast(Main.prefix + cmp("Randomizing ${material.name} für alle Spieler"))
+                                Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_everyone", material.name)))
                                 Config().addRandomizer(
                                     "randomizer.everyone.${material.name}",
                                     everyItem.random()
@@ -130,7 +130,7 @@ class RandomizerCommand {
                             }
                         }
                         for (entity in EntityType.values()) {
-                            Bukkit.broadcast(Main.prefix + cmp("Randomizing ${entity.name} für alle Spieler"))
+                            Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_everyone", entity.name)))
                             Config().addRandomizer(
                                 "randomizer.everyone.${entity.name}",
                                 everyItem.random()

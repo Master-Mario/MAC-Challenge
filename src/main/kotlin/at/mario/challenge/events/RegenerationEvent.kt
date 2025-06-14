@@ -2,6 +2,7 @@ package at.mario.challenge.events
 
 import at.mario.challenge.Main
 import at.mario.challenge.challenges.Challenges
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -27,9 +28,9 @@ object RegenerationEvent {
         val player = it.entity as Player
         for (online in Bukkit.getServer().onlinePlayers) {
             if (online.name == player.name) {
-                player.sendMessage(Main.prefix + cmp(ChatColor.RED.toString() + "Du" + ChatColor.DARK_GRAY + " hast " + ChatColor.RED + "${it.amount / 2} ❤ Heilung ${ChatColor.DARK_GRAY} von " + ChatColor.RED + it.regainReason + ChatColor.DARK_GRAY + " bekommen"))
+                player.sendMessage(Main.prefix + cmp(Lang.translate("regen_self_message", it.amount / 2, it.regainReason)))
             }else if (!it.isCancelled && it.amount != 0.0){
-                online.sendMessage(Main.prefix + cmp(ChatColor.RED.toString() + player.name + ChatColor.DARK_GRAY + " hat " + ChatColor.RED + "${it.amount / 2} ❤ Heilung ${ChatColor.DARK_GRAY} von " + ChatColor.RED + it.regainReason + ChatColor.DARK_GRAY + " bekommen"))
+                online.sendMessage(Main.prefix + cmp(Lang.translate("regen_other_message", player.name, it.amount / 2, it.regainReason)))
                 if (online.health + it.amount > online.maxHealth) {
                     online.health = online.maxHealth
                 }else{

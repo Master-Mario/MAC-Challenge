@@ -2,6 +2,7 @@ package at.mario.challenge.challenges
 
 import at.mario.challenge.Main
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plainText
@@ -25,20 +26,104 @@ enum class Challenges(
     private var isActive: Boolean
 ) {
 
-    NO_DAMAGE(Material.SHIELD, cmp("Kein Schaden", bold = true, color = KColors.DARKRED), "Kein Schaden", cmp("Spiele Minecraft ohne Shaden zu nehmen.", KColors.LIGHTGRAY), false),
-    NO_RESPAWN(Material.SKELETON_SKULL, cmp("Kein Respawn", bold = true, color = KColors.RED), "Kein Respawn", cmp("Spiele Minecraft ohne zu Sterben.", KColors.LIGHTGRAY), false),
-    TEAM_DEATH(Material.RED_BED, cmp("Teamtod", bold = true, color = KColors.BLUE), "Teamtod", cmp("Wenn einer stirbt sterben alle.", KColors.LIGHTGRAY), false),
-    RANDOMIZER(Material.COMMAND_BLOCK, cmp("Zufällige Items", bold = true, color = KColors.YELLOW), "Zufällige Items", cmp("Wähle einen Randomizer aus.", KColors.LIGHTGRAY), false),
-    SHARED_DAMAGE(Material.CHAIN, cmp("Geteilten Schaden", bold = true, color = KColors.PALEVIOLETRED), "Geteilten Schaden", cmp("Jeder Schaden wird auf jeden Spieler anggewant.", KColors.LIGHTGRAY), false),
-    SHARED_REGENERATION(Material.GOLDEN_CARROT, cmp("Geteilte Regeneration", bold = true, color = KColors.LAWNGREEN), "Geteilte Regeneration", cmp("Jede Regeneration wird auf jeden Spieler anggewant.", KColors.LIGHTGRAY), false),
-    NO_FALL_DAMAGE(Material.FEATHER, cmp("Kein Fallschaden", bold = true, color = KColors.LIGHTPURPLE), "Kein Fallschaden", cmp("Spiele Minecraft ohne Fallschaden zu nehmen.", KColors.LIGHTGRAY), false),
-    JUMP_MULTIPLIER(Material.SLIME_BALL, cmp("Jump-Multiplikator", bold = true, color = KColors.LIGHTPURPLE), "Jump-Multiplikator", cmp("Springe immer höher.", KColors.LIGHTGRAY), false),
-    RUN_RANDOMIZER(Material.DIAMOND_SWORD, cmp("Lauf-Randomizer", bold = true, color = KColors.LIGHTPURPLE), "Lauf-Randomizer", cmp("Gibt dir nach ${Config().config.getInt("run-randomizer.anzahl-der-distanz")} Blöcken ein Item.", KColors.LIGHTGRAY), false),
-    NO_BLOCK_DROPS(Material.DIAMOND_PICKAXE, cmp("Keine Blockdrops", bold = true, color = KColors.LIGHTPURPLE), "Keine Blockdrops", cmp("Die Blöcke droppen keine Items.", KColors.LIGHTGRAY), false),
-    NO_ENTITY_DROPS(Material.ZOMBIE_HEAD, cmp("Keine Mobdrops", bold = true, color = KColors.LIGHTPURPLE), "Keine Mobdrops", cmp("Mobs droppen keine Items.", KColors.LIGHTGRAY), false),
-    NO_CRAFTING_TABLE(Material.CRAFTING_TABLE, cmp("Keine Werkbank", bold = true, color = KColors.LIGHTPURPLE), "Kein Werkbank", cmp("Du kannst keine Werkbank benutzen.", KColors.LIGHTGRAY), false),
-    NO_CRAFTING(Material.CRAFTING_TABLE, cmp("Kein Crafting", bold = true, color = KColors.LIGHTPURPLE), "Kein Crafting", cmp("Du kannst nichts craften.", KColors.LIGHTGRAY), false),
-    SEQUENCE(Material.DIAMOND_SWORD, cmp("Reihenfolge", bold = true, color = KColors.LIGHTPURPLE), "Reihenfolge", cmp("Schlage Spieler in der Reihenfolge.", KColors.LIGHTGRAY), false);
+    NO_DAMAGE(
+        Material.SHIELD,
+        cmp(Lang.translate("challenge_no_damage"), bold = true, color = KColors.DARKRED),
+        Lang.translate("challenge_no_damage"),
+        cmp(Lang.translate("challenge_no_damage_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    NO_RESPAWN(
+        Material.SKELETON_SKULL,
+        cmp(Lang.translate("challenge_no_respawn"), bold = true, color = KColors.RED),
+        Lang.translate("challenge_no_respawn"),
+        cmp(Lang.translate("challenge_no_respawn_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    TEAM_DEATH(
+        Material.RED_BED,
+        cmp(Lang.translate("challenge_team_death"), bold = true, color = KColors.BLUE),
+        Lang.translate("challenge_team_death"),
+        cmp(Lang.translate("challenge_team_death_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    RANDOMIZER(
+        Material.COMMAND_BLOCK,
+        cmp(Lang.translate("challenge_randomizer"), bold = true, color = KColors.YELLOW),
+        Lang.translate("challenge_randomizer"),
+        cmp(Lang.translate("challenge_randomizer_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    SHARED_DAMAGE(
+        Material.CHAIN,
+        cmp(Lang.translate("challenge_shared_damage"), bold = true, color = KColors.PALEVIOLETRED),
+        Lang.translate("challenge_shared_damage"),
+        cmp(Lang.translate("challenge_shared_damage_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    SHARED_REGENERATION(
+        Material.GOLDEN_CARROT,
+        cmp(Lang.translate("challenge_shared_regeneration"), bold = true, color = KColors.LAWNGREEN),
+        Lang.translate("challenge_shared_regeneration"),
+        cmp(Lang.translate("challenge_shared_regeneration_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    NO_FALL_DAMAGE(
+        Material.FEATHER,
+        cmp(Lang.translate("challenge_no_fall_damage"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_no_fall_damage"),
+        cmp(Lang.translate("challenge_no_fall_damage_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    JUMP_MULTIPLIER(
+        Material.SLIME_BALL,
+        cmp(Lang.translate("challenge_jump_multiplier"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_jump_multiplier"),
+        cmp(Lang.translate("challenge_jump_multiplier_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    RUN_RANDOMIZER(
+        Material.DIAMOND_SWORD,
+        cmp(Lang.translate("challenge_run_randomizer"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_run_randomizer"),
+        cmp(Lang.translate("challenge_run_randomizer_desc", Config().config.getInt("run-randomizer.anzahl-der-distanz")), KColors.LIGHTGRAY),
+        false
+    ),
+    NO_BLOCK_DROPS(
+        Material.DIAMOND_PICKAXE,
+        cmp(Lang.translate("challenge_no_block_drops"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_no_block_drops"),
+        cmp(Lang.translate("challenge_no_block_drops_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    NO_ENTITY_DROPS(
+        Material.ZOMBIE_HEAD,
+        cmp(Lang.translate("challenge_no_entity_drops"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_no_entity_drops"),
+        cmp(Lang.translate("challenge_no_entity_drops_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    NO_CRAFTING_TABLE(
+        Material.CRAFTING_TABLE,
+        cmp(Lang.translate("challenge_no_crafting_table"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_no_crafting_table"),
+        cmp(Lang.translate("challenge_no_crafting_table_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    NO_CRAFTING(
+        Material.CRAFTING_TABLE,
+        cmp(Lang.translate("challenge_no_crafting"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_no_crafting"),
+        cmp(Lang.translate("challenge_no_crafting_desc"), KColors.LIGHTGRAY),
+        false
+    ),
+    SEQUENCE(
+        Material.DIAMOND_SWORD,
+        cmp(Lang.translate("challenge_sequence"), bold = true, color = KColors.LIGHTPURPLE),
+        Lang.translate("challenge_sequence"),
+        cmp(Lang.translate("challenge_sequence_desc"), KColors.LIGHTGRAY),
+        false
+    );
 
     /**
      * Indicates if the challenge is active. Setting this property triggers activation logic and player notifications.
@@ -48,12 +133,12 @@ enum class Challenges(
         set(value) {
             if (isActive != value) {
                 isActive = value
-                val status = if (isActive) "${ChatColor.GREEN}aktiviert" else "${ChatColor.RED}deaktiviert"
+                val statusString = if (isActive) "§a"+Lang.translate("activated") else "§c"+Lang.translate("deactivated")
                 for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                     onlinePlayer.showTitle(
                         Title.title(
-                            cmp(nameString, KColors.RED) + cmp(" Modul", KColors.LIGHTGRAY),
-                            cmp("wurde $status", KColors.LIGHTGRAY)
+                            cmp(nameString, KColors.RED) + cmp(" " + Lang.translate("module"), KColors.LIGHTGRAY),
+                            cmp(Lang.translate("module_status", statusString), KColors.LIGHTGRAY)
                         )
                     )
                 }
@@ -63,7 +148,7 @@ enum class Challenges(
                             val player = Config().config.getString("sequence._${cmp((i+1).toString()).plainText()}_")
                             if (player != null) {
                                 val onlinePlayer = Bukkit.getPlayer(player)
-                                onlinePlayer?.sendMessage(Main.prefix + cmp("Du bist der " + (i+1) + ". Spieler", KColors.LIGHTPURPLE))
+                                onlinePlayer?.sendMessage(Main.prefix + cmp(Lang.translate("sequence_player", (i+1)), KColors.LIGHTPURPLE))
                             }
                         }
                     }else{
@@ -71,7 +156,7 @@ enum class Challenges(
                         var anzahl = 1
                         for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                             Config().addString("sequence._${cmp((anzahl).toString()).plainText()}_", onlinePlayer.name)
-                            Bukkit.broadcast(Main.prefix + cmp(anzahl.toString() + ". Spieler: " + onlinePlayer.name, KColors.LIGHTPURPLE))
+                            Bukkit.broadcast(Main.prefix + cmp(Lang.translate("sequence_player_broadcast", anzahl, onlinePlayer.name), KColors.LIGHTPURPLE))
                             anzahl++
                         }
                     }

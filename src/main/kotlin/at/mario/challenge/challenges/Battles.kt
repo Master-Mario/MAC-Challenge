@@ -1,8 +1,10 @@
 package at.mario.challenge.challenges
 
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
+import de.miraculixx.kpaper.extensions.bukkit.plainText
 import de.miraculixx.kpaper.extensions.bukkit.plus
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
@@ -24,9 +26,9 @@ enum class Battles(
     /** Mob Army Battle challenge. */
     MOB_ARMY_BATTLE(
         Material.WITHER_SKELETON_SKULL,
-        cmp("Mob Army Battle", bold = true, color = KColors.DARKRED),
-        "Mob Army Battle",
-        cmp("Baue deine eigene Monster Armee auf.", KColors.LIGHTGRAY),
+        cmp(Lang.translate("mob_army_battle"), bold = true, color = KColors.DARKRED),
+        Lang.translate("mob_army_battle"),
+        cmp(Lang.translate("mob_army_battle_desc"), KColors.LIGHTGRAY),
         false
     );
 
@@ -37,13 +39,13 @@ enum class Battles(
         get() = isActive
         set(value) {
             if (value) {
-                if(nameString == "Mob Army Battle"){
+                if(nameString == Lang.translate("mob_army_battle")){
                     Config().resetKills()
                     try {
                         // Multiverse-Core world management logic can be added here if needed
                     }catch (e: Exception){
                         for (player in Bukkit.getOnlinePlayers()) {
-                            Bukkit.broadcast(cmp("Multiverse-Core nicht gefunden, bitte installieren", KColors.RED))
+                            Bukkit.broadcast(cmp(Lang.translate("multiverse_not_found"), KColors.RED))
                             isActive = false
                             return
                         }
@@ -52,12 +54,12 @@ enum class Battles(
             }
             if (isActive != value) {
                 isActive = value
-                val status = if (isActive) "${ChatColor.GREEN}aktiviert" else "${ChatColor.RED}deaktiviert"
+                val status = if (isActive) Lang.translate("activated") else Lang.translate("deactivated")
                 for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                     onlinePlayer.showTitle(
                         Title.title(
                             cmp(nameString, KColors.RED) + cmp(" Modul", KColors.LIGHTGRAY),
-                            cmp("wurde $status", KColors.LIGHTGRAY)
+                            cmp(Lang.translate("module_status", status), KColors.LIGHTGRAY)
                         )
                     )
                 }

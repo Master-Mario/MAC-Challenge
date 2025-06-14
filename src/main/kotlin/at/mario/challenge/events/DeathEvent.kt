@@ -7,6 +7,7 @@ import at.mario.challenge.challenges.Randomizer
 import at.mario.challenge.challenges.TrySystem
 import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.event.listen
 import de.miraculixx.kpaper.extensions.bukkit.cmp
@@ -52,19 +53,16 @@ object DeathEvent {
                     Timer.paused = true
                     Bukkit.broadcast(
                         MiniMessage.miniMessage().deserialize(
-                            "<gray>-----------------------------------------</gray>\n" +
-                                    "\n" +
-                                    " <gradient:#ff1e00:#ff4400:1>${it.player.name} ist gestorben\n" +
-                                    "\n" +
-                                    " <gray>Timer pausiert - </gray><red>${Timer.getTime()}</red>\n" +
-                                    " <gray>Versuch - </gray><red>${TrySystem().attempts}</red>\n" +
-                                    "\n" +
-                                    "<gray>-----------------------------------------</gray>"
+                            Lang.translate("death_broadcast",
+                                it.player.name,
+                                Timer.getTime(),
+                                TrySystem().attempts
+                            )
                         )
                     )
                     var message: TextComponent = Component.text("/reset confirm").color(TextColor.color(KColors.RED))
                     message = message.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/reset confirm"))
-                    message = message.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, cmp("Reset the world")))
+                    message = message.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, cmp(Lang.translate("reset_hover"))))
                     for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                         onlinePlayer.sendMessage(message)
                     }
@@ -123,13 +121,13 @@ object DeathEvent {
                     val newTypeStr = config.getString(path)
 
                     if (newTypeStr == null) {
-                        Bukkit.broadcast(Main.prefix + cmp("${item.type.name} hat keinen Drop definiert!"))
+                        Bukkit.broadcast(Main.prefix + cmp(Lang.translate("entity_no_drop_defined", item.type.name)))
                         return@listen
                     }
 
                     val newMaterial = Material.getMaterial(newTypeStr)
                     if (newMaterial == null) {
-                        Bukkit.broadcast(Main.prefix + cmp("Ungültiges Material in Config: $newTypeStr"))
+                        Bukkit.broadcast(Main.prefix + cmp(Lang.translate("invalid_material_config", newTypeStr)))
                         return@listen
                     }
 
@@ -143,13 +141,13 @@ object DeathEvent {
                 val newTypeStr = config.getString(path)
 
                 if (newTypeStr == null) {
-                    Bukkit.broadcast(Main.prefix + cmp("${it.entity.type.name} hat keinen Drop definiert!"))
+                    Bukkit.broadcast(Main.prefix + cmp(Lang.translate("entity_no_drop_defined", it.entity.type.name)))
                     return@listen
                 }
 
                 val newMaterial = Material.getMaterial(newTypeStr)
                 if (newMaterial == null) {
-                    Bukkit.broadcast(Main.prefix + cmp("Ungültiges Material in Config: $newTypeStr"))
+                    Bukkit.broadcast(Main.prefix + cmp(Lang.translate("invalid_material_config", newTypeStr)))
                     return@listen
                 }
 

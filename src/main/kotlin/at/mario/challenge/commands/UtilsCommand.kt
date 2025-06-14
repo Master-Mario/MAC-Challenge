@@ -1,6 +1,7 @@
 package at.mario.challenge.commands
 
 import at.mario.challenge.Main
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -30,9 +31,9 @@ class UtilsCommand {
         playerExecutor { player, _ ->
             if (player.isOp) {
                 player.teleport(player.world.spawnLocation)
-                player.sendMessage(Main.prefix + cmp("Du wurdest zum Spawn teleportiert!", KColors.GREEN))
+                player.sendMessage(Main.prefix + cmp(Lang.translate("teleport_spawn_success"), KColors.GREEN))
             }else{
-                player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
             }
         }
     }
@@ -47,9 +48,9 @@ class UtilsCommand {
                 player.foodLevel = 20
                 player.saturation = 20f
                 player.fireTicks = 0
-                player.sendMessage(Main.prefix + cmp("Du wurdest geheilt!", KColors.GREEN))
+                player.sendMessage(Main.prefix + cmp(Lang.translate("heal_success"), KColors.GREEN))
             }else{
-                player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
             }
         }
     }
@@ -67,7 +68,7 @@ class UtilsCommand {
                     player.sendMessage(Main.prefix + cmp("Du kannst jetzt nicht mehr fliegen!", KColors.RED))
                 }
             }else{
-                player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
             }
         }
     }
@@ -85,7 +86,7 @@ class UtilsCommand {
                     player.sendMessage(Main.prefix + cmp("Du bist jetzt verwundbar!", KColors.RED))
                 }
             }else{
-                player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
             }
         }
     }
@@ -101,7 +102,7 @@ class UtilsCommand {
                     player.teleport(targetPlayer.location)
                     player.sendMessage(Main.prefix + cmp("Du wurdest zu ${targetPlayer.name} teleportiert!", KColors.GREEN))
                 }else{
-                    player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                    player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
                 }
             }
         }
@@ -156,7 +157,7 @@ class UtilsCommand {
                     player.openInventory(targetPlayer.inventory)
                     player.sendMessage(Main.prefix + cmp("Du siehst jetzt das Inventar von ${targetPlayer.name}!", KColors.GREEN))
                 }else{
-                    player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                    player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
                 }
             }
         }
@@ -173,7 +174,7 @@ class UtilsCommand {
                     targetPlayer.teleport(player.location)
                     player.sendMessage(Main.prefix + cmp("${targetPlayer.name} wurde zu dir teleportiert!", KColors.GREEN))
                 }else{
-                    player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                    player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
                 }
             }
         }
@@ -195,7 +196,7 @@ class UtilsCommand {
                         target.teleport(player.location)
                         player.sendMessage(Main.prefix + cmp("${targetType.name} wurde zu dir teleportiert!", KColors.GREEN))
                     }else{
-                        player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                        player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
                     }
                 }
             }
@@ -217,7 +218,7 @@ class UtilsCommand {
                         }
                         player.sendMessage(Main.prefix + cmp("Du hast $amount ${type}s gespawnt!", KColors.GREEN))
                     }else{
-                        player.sendMessage(Main.prefix + cmp("Du hast keine Berechtigung um diesen Befehl zu benutzen!", KColors.RED))
+                        player.sendMessage(Main.prefix + cmp(Lang.translate("no_permission"), KColors.RED))
                     }
                 }
             }
