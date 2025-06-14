@@ -11,7 +11,7 @@ A modern, modular Minecraft Paper plugin for custom challenges, randomizers, and
 - English codebase, German in-game messages (all prefixed)
 
 ## Installation
-1. Download the latest release from the [releases page](https://github.com/your-repo/ChallengePlugin/releases).
+1. Download the latest release from the [releases page](https://github.com/MarioSinnreich/MAC-Challenge/releases).
 2. Place `ChallengePlugin.jar` in your server's `plugins` folder.
 3. (Optional) Add Multiverse-Core for multi-world support.
 4. Restart your server.
