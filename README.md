@@ -22,10 +22,10 @@ A modern, modular Minecraft Paper plugin for custom challenges, randomizers, and
 - All configuration is stored in the `config.yml` file generated on first run.
 
 ## Commands
-- `/challenge` - Opens the main challenge GUI
+- `/challenge` - Opens the main GUI
 - `/challenge start` - Starts the selected challenge
 - `/challenge stop` - Stops the current challenge
-- `/challenge settings` - Opens the settings GUI
+- `/challenge gui` - Opens the challenge GUI
 
 ## Configuration
 Edit the `config.yml` file in the plugin folder to adjust world settings, enable/disable challenges, and more.
