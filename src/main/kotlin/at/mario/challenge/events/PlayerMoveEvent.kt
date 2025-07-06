@@ -43,7 +43,7 @@ object PlayerMoveEvent {
      * Listens for player move events and applies run randomizer and jump multiplier logic.
      */
     val onRun = listen<PlayerMoveEvent> {
-        if (Timer.paused && (it.player.gameMode == GameMode.SURVIVAL || it.player.gameMode == GameMode.ADVENTURE)){
+        if (Timer.paused && (it.player.gameMode == GameMode.SURVIVAL || it.player.gameMode == GameMode.ADVENTURE) && Config().config.getBoolean("settings.freeze-on-pause")){
             if (it.to.block == it.from.block){
                 return@listen
             }

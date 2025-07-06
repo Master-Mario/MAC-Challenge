@@ -6,10 +6,13 @@ import at.mario.challenge.utils.Utils
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
+import net.minecraft.world.item.enchantment.Enchantment
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.HumanEntity
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import kotlin.math.E
 
 /**
  * GUI for selecting a challenge. Supports pagination and displays all available challenges and their status.
@@ -65,6 +68,10 @@ object ChallengeGUI {
                     cmp("Status: ", KColors.GRAY) + if (challenge.active) cmp("Aktiv", KColors.GREEN) else cmp("Inaktiv", KColors.RED)
                 )
             )
+            if (challenge.active) {
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+                meta.addEnchant(org.bukkit.enchantments.Enchantment.MENDING, 1, true)
+            }
             item.itemMeta = meta
             inventory.addItem(item)
         }

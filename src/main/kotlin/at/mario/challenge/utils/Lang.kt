@@ -727,6 +727,11 @@ object Lang {
             "en" to "Language changed to: %s",
             "es" to "Idioma cambiado a: %s"
         ),
+        "freeze_on_pause" to mapOf(
+            "de" to "Stopp bei Pause",
+            "en" to "Freeze on Pause",
+            "es" to "Parar en Pausa"
+        ),
     )
 
     fun translate(key: String, vararg args: Any): String {

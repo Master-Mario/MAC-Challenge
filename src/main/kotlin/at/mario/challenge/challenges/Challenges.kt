@@ -70,56 +70,56 @@ enum class Challenges(
     ),
     NO_FALL_DAMAGE(
         Material.FEATHER,
-        cmp(Lang.translate("challenge_no_fall_damage"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_no_fall_damage"), bold = true, color = KColors.AQUAMARINE),
         Lang.translate("challenge_no_fall_damage"),
         cmp(Lang.translate("challenge_no_fall_damage_desc"), KColors.LIGHTGRAY),
         false
     ),
     JUMP_MULTIPLIER(
         Material.SLIME_BALL,
-        cmp(Lang.translate("challenge_jump_multiplier"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_jump_multiplier"), bold = true, color = KColors.ORANGE),
         Lang.translate("challenge_jump_multiplier"),
         cmp(Lang.translate("challenge_jump_multiplier_desc"), KColors.LIGHTGRAY),
         false
     ),
     RUN_RANDOMIZER(
         Material.DIAMOND_SWORD,
-        cmp(Lang.translate("challenge_run_randomizer"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_run_randomizer"), bold = true, color = KColors.DARKGREEN),
         Lang.translate("challenge_run_randomizer"),
         cmp(Lang.translate("challenge_run_randomizer_desc", Config().config.getInt("run-randomizer.anzahl-der-distanz")), KColors.LIGHTGRAY),
         false
     ),
     NO_BLOCK_DROPS(
         Material.DIAMOND_PICKAXE,
-        cmp(Lang.translate("challenge_no_block_drops"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_no_block_drops"), bold = true, color = KColors.DEEPPINK),
         Lang.translate("challenge_no_block_drops"),
         cmp(Lang.translate("challenge_no_block_drops_desc"), KColors.LIGHTGRAY),
         false
     ),
     NO_ENTITY_DROPS(
         Material.ZOMBIE_HEAD,
-        cmp(Lang.translate("challenge_no_entity_drops"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_no_entity_drops"), bold = true, color = KColors.SKYBLUE),
         Lang.translate("challenge_no_entity_drops"),
         cmp(Lang.translate("challenge_no_entity_drops_desc"), KColors.LIGHTGRAY),
         false
     ),
     NO_CRAFTING_TABLE(
         Material.CRAFTING_TABLE,
-        cmp(Lang.translate("challenge_no_crafting_table"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_no_crafting_table"), bold = true, color = KColors.GOLD),
         Lang.translate("challenge_no_crafting_table"),
         cmp(Lang.translate("challenge_no_crafting_table_desc"), KColors.LIGHTGRAY),
         false
     ),
     NO_CRAFTING(
         Material.CRAFTING_TABLE,
-        cmp(Lang.translate("challenge_no_crafting"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_no_crafting"), bold = true, color = KColors.INDIGO),
         Lang.translate("challenge_no_crafting"),
         cmp(Lang.translate("challenge_no_crafting_desc"), KColors.LIGHTGRAY),
         false
     ),
     SEQUENCE(
         Material.DIAMOND_SWORD,
-        cmp(Lang.translate("challenge_sequence"), bold = true, color = KColors.LIGHTPURPLE),
+        cmp(Lang.translate("challenge_sequence"), bold = true, color = KColors.CRIMSON),
         Lang.translate("challenge_sequence"),
         cmp(Lang.translate("challenge_sequence_desc"), KColors.LIGHTGRAY),
         false
@@ -144,11 +144,11 @@ enum class Challenges(
                 }
                 if (nameComponent == SEQUENCE.nameComponent) {
                     if (Config().config.contains("sequence._${Bukkit.getOnlinePlayers().size}_")) {
-                        for(i in 1 until Bukkit.getOnlinePlayers().size){
-                            val player = Config().config.getString("sequence._${cmp((i+1).toString()).plainText()}_")
+                        for(i in 1 .. Bukkit.getOnlinePlayers().size){
+                            val player = Config().config.getString("sequence._${cmp((i).toString()).plainText()}_")
                             if (player != null) {
                                 val onlinePlayer = Bukkit.getPlayer(player)
-                                onlinePlayer?.sendMessage(Main.prefix + cmp(Lang.translate("sequence_player", (i+1)), KColors.LIGHTPURPLE))
+                                onlinePlayer?.sendMessage(Main.prefix + cmp("${i}. $player", KColors.LIGHTPURPLE))
                             }
                         }
                     }else{
@@ -156,7 +156,7 @@ enum class Challenges(
                         var anzahl = 1
                         for (onlinePlayer in Bukkit.getOnlinePlayers()) {
                             Config().addString("sequence._${cmp((anzahl).toString()).plainText()}_", onlinePlayer.name)
-                            Bukkit.broadcast(Main.prefix + cmp(Lang.translate("sequence_player_broadcast", anzahl, onlinePlayer.name), KColors.LIGHTPURPLE))
+                            Bukkit.broadcast(Main.prefix + cmp("${anzahl}. ${onlinePlayer.name}", KColors.LIGHTPURPLE))
                             anzahl++
                         }
                     }

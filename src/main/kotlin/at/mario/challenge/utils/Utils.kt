@@ -53,7 +53,7 @@ class Utils {
         val meta = item.itemMeta
         if (glow) {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-            meta.addEnchant(Enchantment.DEPTH_STRIDER, 1, true)
+            meta.addEnchant(Enchantment.MENDING, 1, true)
         }
         if (unbreakable) {
             meta.isUnbreakable = true
@@ -88,7 +88,7 @@ class Utils {
         val meta = item.itemMeta
         if (glow) {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-            meta.addEnchant(Enchantment.DEPTH_STRIDER, 1, true)
+            meta.addEnchant(Enchantment.MENDING, 1, true)
         }
         if (unbreakable) {
             meta.isUnbreakable = true
@@ -125,7 +125,7 @@ class Utils {
         val meta = item.itemMeta
         if (glow) {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
-            meta.addEnchant(Enchantment.DEPTH_STRIDER, 1, true)
+            meta.addEnchant(Enchantment.MENDING, 1, true)
         }
         if (unbreakable) {
             meta.isUnbreakable = true

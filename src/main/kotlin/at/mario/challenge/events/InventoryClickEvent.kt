@@ -155,6 +155,20 @@ object InventoryClickEvent {
             }
         }else if (it.view.title == Lang.translate("settings_title")){
             it.isCancelled = true
+            // Navigation for settings pages
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("previous_page"))) {
+                val currentPage = at.mario.challenge.guis.SettingsGUI.playerPages[player.name] ?: 0
+                at.mario.challenge.guis.SettingsGUI.open(player, currentPage - 1)
+                val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
+                player.playSound(sound)
+                return@listen
+            } else if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("next_page"))) {
+                val currentPage = at.mario.challenge.guis.SettingsGUI.playerPages[player.name] ?: 0
+                at.mario.challenge.guis.SettingsGUI.open(player, currentPage + 1)
+                val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
+                player.playSound(sound)
+                return@listen
+            }
             if (it.currentItem?.type == Material.LIME_DYE){
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
@@ -205,6 +219,29 @@ object InventoryClickEvent {
                     for (world in Bukkit.getWorlds()) {
                         world.setGameRule(GameRule.NATURAL_REGENERATION, true)
                     }
+                }
+            }
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("freeze_on_pause"), KColors.SKYBLUE, true)) {
+                if (it.currentItem?.lore() == listOf(
+                        cmp(Lang.translate("status"), KColors.GRAY) + cmp(
+                            Lang.translate("enabled"),
+                            KColors.LIGHTGREEN
+                        )
+                    )
+                ) {
+                    val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
+                    player.playSound(sound)
+                    Config().addBoolean("settings.freeze-on-pause", false)
+                } else if (it.currentItem?.lore() == listOf(
+                        cmp(Lang.translate("status"), KColors.GRAY) + cmp(
+                            Lang.translate("disabled"),
+                            KColors.ORANGERED
+                        )
+                    )
+                ) {
+                    val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
+                    player.playSound(sound)
+                    Config().addBoolean("settings.freeze-on-pause", true)
                 }
             }
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("view_distance"), KColors.GAINSBORO, true)) {
