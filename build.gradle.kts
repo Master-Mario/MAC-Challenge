@@ -8,10 +8,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    mavenLocal()
-    flatDir{
-        dirs("C:\\Users\\sinnr\\IdeaProjects\\Challenge-Plugin\\src\\main\\resources\\")
-    }
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.onarandombox.com/content/groups/public/")
 }
 
@@ -20,7 +17,7 @@ dependencies {
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     implementation("dev.jorel", "commandapi-bukkit-shade", "9.5.2")
     implementation("dev.jorel", "commandapi-bukkit-kotlin", "9.5.2")
-    //compileOnly("mac.mario", "Multiverse-Core-4.3.12", "4.3.12")
+    compileOnly("com.onarandombox.multiversecore:multiverse-core:4.3.12")
 }
 
 kotlin {
