@@ -733,11 +733,29 @@ object Lang {
             "es" to "Parar en Pausa"
         ),
     )
+    
+    // Cache the current language to avoid Config() calls in hot paths
+    private var currentLanguage: String = "en"
+    private var config: Config? = null
+    
+    /**
+     * Updates the cached language setting. Should be called when language config changes.
+     */
+    fun refreshLanguage() {
+        if (config == null) config = Config()
+        currentLanguage = config?.config?.getString("language") ?: "en"
+    }
+    
+    /**
+     * Initialize language on first access
+     */
+    init {
+        refreshLanguage()
+    }
 
     fun translate(key: String, vararg args: Any): String {
-        val lang = Config().config.getString("language") ?: "en"
         val map = translations[key] ?: return key
-        val template = map[lang] ?: map["de"] ?: key
+        val template = map[currentLanguage] ?: map["de"] ?: key
         return String.format(template, *args)
     }
 }

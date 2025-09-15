@@ -1,12 +1,12 @@
 package at.mario.challenge
 
-import at.mario.challenge.events.MABClickEvent
 import at.mario.challenge.challenges.*
 import at.mario.challenge.commands.*
 import at.mario.challenge.events.*
 import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
 import at.mario.challenge.utils.ConfigManager
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -47,7 +47,10 @@ class Main : KPaper() {
         /**
          * Map of team numbers to player name lists, loaded from config.
          */
-        var teams = mutableMapOf<Int, List<String>?>(1 to Config().config.getList("team1") as List<String>?, 2 to Config().config.getList("team2") as List<String>?)
+        var teams = mutableMapOf<Int, List<String>?>(
+            1 to (Config().config.getList("team1") as? List<String>),
+            2 to (Config().config.getList("team2") as? List<String>)
+        )
         /**
          * Collection of online player names.
          */
@@ -113,16 +116,16 @@ class Main : KPaper() {
      * Called when the plugin is loaded. Initializes config, commands, and teams. Handles world reset if needed.
      */
     override fun load() {
+        instance = this
+        val config = Config()
+        
         // Initialize player run-blocks-amount in config if not present
         for (player in Bukkit.getOnlinePlayers()) {
-            if (!Config().config.contains("run-randomizer.run-blocks-amount.${player.name}")){
-                Config().add(
-                    "run-randomizer.run-blocks-amount.${player.name}", 0.0
-                )
+            val key = "run-randomizer.run-blocks-amount.${player.name}"
+            if (!config.config.contains(key)){
+                config.add(key, 0.0)
             }
         }
-
-        instance = this
         // Register commands
         TryCommand()
         TimerCommand()
@@ -138,8 +141,9 @@ class Main : KPaper() {
         mabTeam1.clear()
         mabTeam2.clear()
         for (player in Bukkit.getOnlinePlayers()) {
-            if (Config().config.contains(player.name + ".team")){
-                when (Config().config.getString(player.name + ".team")) {
+            val teamKey = "${player.name}.team"
+            if (config.config.contains(teamKey)){
+                when (config.config.getString(teamKey)) {
                     "Team1" -> mabTeam1 += player
                     "Team2" -> mabTeam2 += player
                 }
@@ -147,58 +151,57 @@ class Main : KPaper() {
         }
 
         // Initialize config values if not present
-        if (!Config().config.contains("canTry")) {
-            Config().addBoolean("canTry", false)
-            Config().save()
+        var needsSave = false
+        if (!config.config.contains("canTry")) {
+            config.setBoolean("canTry", false)
+            needsSave = true
         }
-        if (!Config().config.contains("isReset")) {
-            Config().addBoolean("isReset", false)
-            Config().save()
+        if (!config.config.contains("isReset")) {
+            config.setBoolean("isReset", false)
+            needsSave = true
         }
-        if (!Config().config.contains("language")) {
-            Config().addString("language", "en")
-            Config().save()
+        if (!config.config.contains("language")) {
+            config.setString("language", "en")
+            needsSave = true
+        }
+        if (needsSave) {
+            config.save()
         }
 
         // Handle world reset if isReset is true
-        if (Config().config.getBoolean("isReset")) {
+        if (config.config.getBoolean("isReset")) {
             reset = true
             try {
-                val world = File(Bukkit.getWorldContainer(), "world")
-                val nether = File(Bukkit.getWorldContainer(), "world_nether")
-                val end = File(Bukkit.getWorldContainer(), "world_the_end")
-                FileUtils.deleteDirectory(world)
-                FileUtils.deleteDirectory(nether)
-                FileUtils.deleteDirectory(end)
-
-                world.mkdir()
-                nether.mkdir()
-                end.mkdir()
-
-                File(world, "data").mkdir()
-                File(world, "datapacks").mkdir()
-                File(world, "playerdata").mkdir()
-                File(world, "poi").mkdir()
-                File(world, "region").mkdir()
-
-                File(nether, "data").mkdir()
-                File(nether, "datapacks").mkdir()
-                File(nether, "playerdata").mkdir()
-                File(nether, "poi").mkdir()
-                File(nether, "region").mkdir()
-
-                File(end, "data").mkdir()
-                File(end, "datapacks").mkdir()
-                File(end, "playerdata").mkdir()
-                File(end, "poi").mkdir()
-                File(end, "region").mkdir()
-
-            }catch (e: IOException){
+                resetWorldDirectories()
+            } catch (e: IOException) {
+                server.logger.severe("Failed to reset world directories: ${e.message}")
                 e.printStackTrace()
             }
 
-            Config().addBoolean("isReset", false)
-            Config().save()
+            config.setBoolean("isReset", false)
+            config.save()
+        }
+    }
+
+    /**
+     * Helper method to reset world directories safely
+     */
+    private fun resetWorldDirectories() {
+        val worldContainer = Bukkit.getWorldContainer()
+        val worldNames = listOf("world", "world_nether", "world_the_end")
+        val subDirectories = listOf("data", "datapacks", "playerdata", "poi", "region")
+
+        for (worldName in worldNames) {
+            val worldDir = File(worldContainer, worldName)
+            if (worldDir.exists()) {
+                FileUtils.deleteDirectory(worldDir)
+            }
+            worldDir.mkdir()
+
+            // Create subdirectories
+            for (subDir in subDirectories) {
+                File(worldDir, subDir).mkdir()
+            }
         }
     }
 
@@ -206,6 +209,8 @@ class Main : KPaper() {
      * Called when the plugin is enabled. Initializes events, loads settings, and activates challenges.
      */
     override fun startup() {
+        val config = Config()
+        
         // Register events
         Timer
         PlayerMoveEvent
@@ -229,77 +234,97 @@ class Main : KPaper() {
                 " \\______  |___|  (____  |____|____/\\___  |___|  /_____/  \\___  |____|   |_______ |____/_____/ |__|___|  /\n" +
                 "        \\/     \\/     \\/               \\/     \\/             \\/                 \\/                    \\/ ")
         )
+        
         // Set world settings from config or use defaults
-        if (Config().config.contains("settings.view-distance")) {
-            for (world in Bukkit.getWorlds()) {
-                world.viewDistance = Config().config.getInt("settings.view-distance")
-            }
+        var needsSave = false
+        
+        val viewDistance = if (config.config.contains("settings.view-distance")) {
+            config.config.getInt("settings.view-distance")
         } else {
-            Config().addInt("settings.view-distance", 10)
-            Config().save()
+            config.setInt("settings.view-distance", 10)
+            needsSave = true
+            10
         }
-        if (Config().config.contains("settings.simulation-distance")) {
-            for (world in Bukkit.getWorlds()) {
-                world.simulationDistance = Config().config.getInt("settings.simulation-distance")
-            }
+        
+        val simulationDistance = if (config.config.contains("settings.simulation-distance")) {
+            config.config.getInt("settings.simulation-distance")
         } else {
-            Config().addInt("settings.simulation-distance", 10)
-            Config().save()
+            config.setInt("settings.simulation-distance", 10)
+            needsSave = true
+            10
         }
-        if (Config().config.contains("settings.pvp")) {
-            for (world in Bukkit.getWorlds()) {
-                world.pvp = Config().config.getBoolean("settings.pvp")
-            }
+        
+        val pvpEnabled = if (config.config.contains("settings.pvp")) {
+            config.config.getBoolean("settings.pvp")
         } else {
-            Config().addBoolean("settings.pvp", true)
-            Config().save()
+            config.setBoolean("settings.pvp", true)
+            needsSave = true
+            true
+        }
+        
+        // Apply settings to all worlds
+        for (world in Bukkit.getWorlds()) {
+            world.viewDistance = viewDistance
+            world.simulationDistance = simulationDistance
+            world.pvp = pvpEnabled
         }
         // Initialize and activate challenges, goals, battles, and randomizer settings
         for (challenges in Challenges.values()){
-            if (!Config().config.contains(challenges.nameString)){
-                Config().addBoolean(challenges.nameString, false)
-                Config().save()
-            }else{
-                challenges.active = Config().config.getBoolean(challenges.nameString)
+            if (!config.config.contains(challenges.nameString)){
+                config.setBoolean(challenges.nameString, false)
+                needsSave = true
+            } else {
+                challenges.active = config.config.getBoolean(challenges.nameString)
             }
         }
         for (goals in Goals.values()){
-            if (!Config().config.contains(goals.nameString)){
-                Config().addBoolean(goals.nameString, false)
-                Config().save()
-            }else{
-                goals.active = Config().config.getBoolean(goals.nameString)
+            if (!config.config.contains(goals.nameString)){
+                config.setBoolean(goals.nameString, false)
+                needsSave = true
+            } else {
+                goals.active = config.config.getBoolean(goals.nameString)
             }
         }
         for (battles in Battles.values()){
-            if (!Config().config.contains(battles.nameString)){
-                Config().addBoolean(battles.nameString, false)
-                Config().save()
-            }else{
-                battles.active = Config().config.getBoolean(battles.nameString)
+            if (!config.config.contains(battles.nameString)){
+                config.setBoolean(battles.nameString, false)
+                needsSave = true
+            } else {
+                battles.active = config.config.getBoolean(battles.nameString)
             }
         }
         for (randomizer in Randomizer.values()){
-            if (!Config().config.contains(randomizer.nameString)){
-                Config().addBoolean(randomizer.nameString, false)
-                Config().save()
-            }else{
-                randomizer.active = Config().config.getBoolean(randomizer.nameString)
+            if (!config.config.contains(randomizer.nameString)){
+                config.setBoolean(randomizer.nameString, false)
+                needsSave = true
+            } else {
+                randomizer.active = config.config.getBoolean(randomizer.nameString)
             }
         }
+        
         // Initialize timer from config or set to zero if reset
-        if (!Config().config.contains("timer")){
-            Config().addInt("timer", 0)
-            Config().save()
-        }else if (!reset){
-            Timer.setTime(Config().config.getInt("timer").seconds)
-        }else{
+        if (!config.config.contains("timer")){
+            config.setInt("timer", 0)
+            needsSave = true
+        } else if (!reset){
+            Timer.setTime(config.config.getInt("timer").seconds)
+        } else {
             Timer.setTime(ZERO)
         }
 
-        if (!Config().config.contains("run-randomizer.anzahl-der-distanz")){
-            Config().addInt("run-randomizer.anzahl-der-distanz", 500)
+        if (!config.config.contains("run-randomizer.anzahl-der-distanz")){
+            config.setInt("run-randomizer.anzahl-der-distanz", 500)
+            needsSave = true
         }
+        
+        if (needsSave) {
+            config.save()
+        }
+        
+        // Refresh language cache after config initialization
+        Lang.refreshLanguage()
+        // Update PlayerMoveEvent config cache as well
+        PlayerMoveEvent.refreshConfigCache()
 
     }
 
@@ -308,13 +333,26 @@ class Main : KPaper() {
      */
     override fun shutdown() {
         reset = false
-        if (resetCommand!!.reset)
-            Config().addBoolean("isReset", true)
-
-        if (!Config().config.getBoolean("isReset")){
-            ConfigManager("C:\\Spiele\\MAC-Netzwerk\\ChallengeTestserver\\plugins\\MAC-ServerManager\\config.yml").setBoolean("online", false)
+        val config = Config()
+        
+        resetCommand?.let { command ->
+            if (command.reset) {
+                config.setBoolean("isReset", true)
+            }
         }
-        Config().save()
+
+        if (!config.config.getBoolean("isReset")){
+            // Use relative path instead of hardcoded Windows path
+            val serverManagerConfigPath = File(dataFolder.parentFile, "MAC-ServerManager/config.yml")
+            if (serverManagerConfigPath.exists()) {
+                try {
+                    ConfigManager(serverManagerConfigPath.absolutePath).setBoolean("online", false)
+                } catch (e: Exception) {
+                    server.logger.warning("Could not update server manager config: ${e.message}")
+                }
+            }
+        }
+        config.save()
         CommandAPI.onDisable()
         server.logger.info("Shutting down ChallengePlugin")
     }

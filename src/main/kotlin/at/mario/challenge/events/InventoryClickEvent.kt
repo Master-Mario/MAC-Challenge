@@ -313,11 +313,13 @@ object InventoryClickEvent {
             Config().addInt("settings.simulation-distance", Bukkit.getWorld("world")?.simulationDistance ?: 10)
             SettingsGUI.open(player)
             if (it.currentItem?.type == Material.BOOK) {
-                val current = Config().config.getString("language") ?: "en"
+                val config = Config()
+                val current = config.config.getString("language") ?: "en"
                 val available = listOf("de", "en", "es")
                 val idx = available.indexOf(current)
                 val next = available[(idx + 1) % available.size]
-                Config().addString("language", next)
+                config.addString("language", next)
+                Lang.refreshLanguage() // Update language cache
                 SettingsGUI.open(player)
                 player.sendMessage(Main.prefix + cmp(Lang.translate("language_changed", next), KColors.LIGHTPURPLE))
                 Bukkit.reload()

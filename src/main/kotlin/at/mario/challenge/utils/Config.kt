@@ -89,12 +89,7 @@ class Config {
      */
     fun addString(path: String, value: String){
         config.set(path, value)
-        try {
-            config.save(file)
-        } catch (e: IOException) {
-            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
-            e.printStackTrace()
-        }
+        save()
     }
 
     /**
@@ -119,12 +114,7 @@ class Config {
      */
     fun addBoolean(path: String, value: Boolean){
         config.set(path, value)
-        try {
-            config.save(file)
-        } catch (e: IOException) {
-            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
-            e.printStackTrace()
-        }
+        save()
     }
 
     /**
@@ -134,12 +124,7 @@ class Config {
      */
     fun add(path: String, value: Any){
         config.set(path, value)
-        try {
-            config.save(file)
-        } catch (e: IOException) {
-            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
-            e.printStackTrace()
-        }
+        save()
     }
 
     /**
@@ -149,12 +134,43 @@ class Config {
      */
     fun addInt(path: String, value: Int){
         config.set(path, value)
-        try {
-            config.save(file)
-        } catch (e: IOException) {
-            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
-            e.printStackTrace()
-        }
+        save()
+    }
+
+    /**
+     * Sets a string value in the main config without saving.
+     * @param path Path in the config
+     * @param value String value to set
+     */
+    fun setString(path: String, value: String){
+        config.set(path, value)
+    }
+
+    /**
+     * Sets a boolean value in the main config without saving.
+     * @param path Path in the config
+     * @param value Boolean value to set
+     */
+    fun setBoolean(path: String, value: Boolean){
+        config.set(path, value)
+    }
+
+    /**
+     * Sets any value in the main config without saving.
+     * @param path Path in the config
+     * @param value Value to set
+     */
+    fun set(path: String, value: Any){
+        config.set(path, value)
+    }
+
+    /**
+     * Sets an integer value in the main config without saving.
+     * @param path Path in the config
+     * @param value Integer value to set
+     */
+    fun setInt(path: String, value: Int){
+        config.set(path, value)
     }
 
     /**
