@@ -6,6 +6,7 @@ import at.mario.challenge.events.*
 import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
 import at.mario.challenge.utils.ConfigManager
+import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.chat.KColors
 import de.miraculixx.kpaper.extensions.bukkit.cmp
 import de.miraculixx.kpaper.extensions.bukkit.plus
@@ -319,6 +320,11 @@ class Main : KPaper() {
         if (needsSave) {
             config.save()
         }
+        
+        // Refresh language cache after config initialization
+        Lang.refreshLanguage()
+        // Update PlayerMoveEvent config cache as well
+        PlayerMoveEvent.refreshConfigCache()
 
     }
 
