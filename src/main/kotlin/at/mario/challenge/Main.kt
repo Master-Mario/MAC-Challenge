@@ -1,6 +1,5 @@
 package at.mario.challenge
 
-import at.mario.challenge.events.MABClickEvent
 import at.mario.challenge.challenges.*
 import at.mario.challenge.commands.*
 import at.mario.challenge.events.*

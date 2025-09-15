@@ -21,6 +21,21 @@ import org.bukkit.inventory.ItemStack
  * Handles block break and explosion events. Applies challenge and randomizer logic to block drops.
  */
 object BlockDropEvent {
+    
+    // Cache config instance to avoid repeated Config() calls in hot paths
+    private val config = Config()
+    
+    /**
+     * Gets randomized drop material for a block type and player/mode.
+     * Caches config instance to avoid repeated instantiation.
+     */
+    private fun getRandomizedDrop(blockType: String, playerName: String?, isPerPlayer: Boolean): String? {
+        return if (isPerPlayer && playerName != null) {
+            config.randomizerConfig.getString("randomizer.$playerName.$blockType")
+        } else {
+            config.randomizerConfig.getString("randomizer.everyone.$blockType")
+        }
+    }
     /**
      * Handles block breaking by players, applying drop randomization and challenge rules.
      */
@@ -36,29 +51,20 @@ object BlockDropEvent {
         }
         if (Randomizer.BLOCK_DROP_RANDOMIZER.active) {
             it.isDropItems = false
-            if (!Randomizer.PER_PLAYER.active){
-                val mapped = Config().randomizerConfig.getString("randomizer.everyone." + it.block.type.name)
-                if (mapped != null){
-                    it.block.location.world.dropItemNaturally(
-                        it.block.location, ItemStack(
-                            Material.valueOf(mapped),
-                            1
-                        )
+            val isPerPlayer = Randomizer.PER_PLAYER.active
+            val mapped = getRandomizedDrop(it.block.type.name, it.player.name, isPerPlayer)
+            
+            if (mapped != null){
+                it.block.location.world.dropItemNaturally(
+                    it.block.location, ItemStack(
+                        Material.valueOf(mapped),
+                        1
                     )
-                }
-            }else {
-                val mapped = Config().randomizerConfig.getString("randomizer." + it.player.name + "." + it.block.type.name)
-                if (mapped != null) {
-                    it.block.location.world.dropItemNaturally(
-                        it.block.location, ItemStack(
-                            Material.valueOf(mapped),
-                            1
-                        )
-                    )
-                } else {
-                    Bukkit.broadcast(Main.prefix + cmp(Lang.translate("block_no_drop_defined", it.block.type.name, it.player.name)))
-                    it.isCancelled = true
-                }
+                )
+            } else if (isPerPlayer) {
+                Bukkit.broadcast(Main.prefix + cmp(Lang.translate("block_no_drop_defined", it.block.type.name, it.player.name)))
+                it.isCancelled = true
+            }
             }
         }
     }
@@ -72,8 +78,10 @@ object BlockDropEvent {
         }
         if (Randomizer.BLOCK_DROP_RANDOMIZER.active) {
             it.drops.clear()
-            if (!Randomizer.PER_PLAYER.active){
-                val mapped = Config().randomizerConfig.getString("randomizer.everyone." + it.block.type.name)
+            val isPerPlayer = Randomizer.PER_PLAYER.active
+            
+            if (!isPerPlayer){
+                val mapped = getRandomizedDrop(it.block.type.name, null, false)
                 if (mapped != null) {
                     it.block.location.world.dropItemNaturally(
                         it.block.location, ItemStack(
@@ -82,20 +90,21 @@ object BlockDropEvent {
                         )
                     )
                 }
-            }else {
+            } else {
+                // Find closest player for per-player randomization
                 var closest = Double.MAX_VALUE
                 var closestp: Player? = null
-                for (i in Bukkit.getOnlinePlayers()) {
-                    val dist = i.location.distance(it.block.location)
+                for (player in Bukkit.getOnlinePlayers()) {
+                    val dist = player.location.distance(it.block.location)
                     if (closest == Double.MAX_VALUE || dist < closest) {
                         closest = dist
-                        closestp = i
+                        closestp = player
                     }
                 }
                 if (closestp == null) {
                     Bukkit.broadcast(Main.prefix + cmp("No player found for block break!"));
                 } else {
-                    val mapped = Config().randomizerConfig.getString("randomizer." + closestp.name + "." + it.block.type.name)
+                    val mapped = getRandomizedDrop(it.block.type.name, closestp.name, true)
                     if (mapped != null) {
                         it.block.location.world.dropItemNaturally(
                             it.block.location, ItemStack(
@@ -108,6 +117,7 @@ object BlockDropEvent {
                     }
                     it.block.drops.clear()
                 }
+            }
             }
         }
     }
@@ -136,7 +146,7 @@ object BlockDropEvent {
                 if (closestp == null) {
                     Bukkit.broadcast(Main.prefix + cmp("No player found for explosion!"));
                 } else {
-                    val mapped = Config().randomizerConfig.getString("randomizer." + closestp.name + "." + it.block.type.name)
+                    val mapped = getRandomizedDrop(it.block.type.name, closestp.name, true)
                     if (mapped != null) {
                         it.block.location.world.dropItemNaturally(
                             it.block.location, ItemStack(
@@ -149,8 +159,8 @@ object BlockDropEvent {
                         it.isCancelled = true
                     }
                 }
-            }else{
-                val mapped = Config().randomizerConfig.getString("randomizer.everyone." + it.block.type.name)
+            } else {
+                val mapped = getRandomizedDrop(it.block.type.name, null, false)
                 if (mapped != null) {
                     it.block.location.world.dropItemNaturally(
                         it.block.location, ItemStack(

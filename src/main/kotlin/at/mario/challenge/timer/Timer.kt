@@ -92,8 +92,9 @@ object Timer {
                 if (!paused) time += 1.seconds
             }
             ChallengeManager()
-            Config().addInt("timer", time.toInt(DurationUnit.SECONDS))
-            Config().save()
+            val config = Config()
+            config.setInt("timer", time.toInt(DurationUnit.SECONDS))
+            config.save()
         }
     }
 
