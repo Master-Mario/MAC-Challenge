@@ -25,16 +25,21 @@ class RandomizerCommand {
             literalArgument("per-player") {
                 literalArgument("items-to-items") {
                     anyExecutor { _, _ ->
-                        var everyMaterial: MutableList<String> = mutableListOf()
-                        for (material in Material.values()) {
-                            if (material.isItem) {
-                                everyMaterial = everyMaterial.plus(material.name) as MutableList<String>
-                            }
-                        }
-                        for (material in Material.values()) {
-                            for (player in Bukkit.getOnlinePlayers()) {
+                        val config = Config()
+                        
+                        // Build list of all item materials efficiently
+                        val everyMaterial = Material.values()
+                            .filter { it.isItem }
+                            .map { it.name }
+                            .toMutableList()
+                        
+                        val materials = Material.values().filter { it.isItem }
+                        val players = Bukkit.getOnlinePlayers()
+                        
+                        for (material in materials) {
+                            for (player in players) {
                                 Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_player", material.name, player.name)))
-                                Config().addRandomizer(
+                                config.addRandomizer(
                                     "randomizer.${player.name}.${material.name}",
                                     everyMaterial.random()
                                 )
@@ -42,60 +47,23 @@ class RandomizerCommand {
                         }
                     }
                 }
-                /*literalArgument("block-to-items"){
-                    anyExecutor{ _, _ ->
-                        var everyItem : MutableList<String> = mutableListOf()
-                        for (material in Material.values()) {
-                            if (material.isItem) {
-                                everyItem = everyItem.plus(material.name) as MutableList<String>
-                            }
-                        }
-
-                        for (material in Material.values()) {
-                            if (material.isBlock) {
-                                for (player in Bukkit.getOnlinePlayers()) {
-                                    Bukkit.broadcast(Main.prefix + cmp("Randomizing ${material.name} for ${player.name}"))
-                                    Config().addRandomizer(
-                                        "randomizer.${player.name}.${material.name}",
-                                        everyItem.random()
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-                literalArgument("chest"){
-                    anyExecutor{ _, _ ->
-                        var everyItem : MutableList<String> = mutableListOf()
-                        for (material in Material.values()) {
-                            if (material.isItem){
-                                everyItem = everyItem.plus(material.name) as MutableList<String>
-                            }
-                        }
-
-                        for (material in Material.values()) {
-                            if (material.isItem) {
-                                for (player in Bukkit.getOnlinePlayers()) {
-                                    Bukkit.broadcast(Main.prefix + cmp("Randomizing ${material.name} for ${player.name}"))
-                                    Config().addRandomizer("randomizer.${player.name}.${material.name}", everyItem.random())
-                                }
-                            }
-                        }
-                    }
-                }*/
             }
             literalArgument("everyone") {
                 literalArgument("items-to-items") {
                     anyExecutor { _, _ ->
-                        var everyMaterial: MutableList<String> = mutableListOf()
-                        for (material in Material.values()) {
-                            if (material.isItem) {
-                                everyMaterial = everyMaterial.plus(material.name) as MutableList<String>
-                            }
-                        }
-                        for (material in Material.values()) {
+                        val config = Config()
+                        
+                        // Build list of all item materials efficiently  
+                        val everyMaterial = Material.values()
+                            .filter { it.isItem }
+                            .map { it.name }
+                            .toMutableList()
+                        
+                        val materials = Material.values().filter { it.isItem }
+                        
+                        for (material in materials) {
                             Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_everyone", material.name)))
-                            Config().addRandomizer(
+                            config.addRandomizer(
                                 "randomizer.everyone.${material.name}",
                                 everyMaterial.random()
                             )
@@ -104,34 +72,38 @@ class RandomizerCommand {
                 }
                 literalArgument("block-to-items"){
                     anyExecutor{ _, _ ->
-                        var everyItem : MutableList<String> = mutableListOf()
-                        for (material in Material.values()) {
-                            if (material.isItem) {
-                                everyItem = everyItem.plus(material.name) as MutableList<String>
-                            }
-                        }
-                        for (material in Material.values()) {
-                            if (material.isBlock) {
-                                Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_everyone", material.name)))
-                                Config().addRandomizer(
-                                    "randomizer.everyone.${material.name}",
-                                    everyItem.random()
-                                )
-                            }
+                        val config = Config()
+                        
+                        // Build list of all item materials efficiently
+                        val everyItem = Material.values()
+                            .filter { it.isItem }
+                            .map { it.name }
+                            .toMutableList()
+                        
+                        val blockMaterials = Material.values().filter { it.isBlock }
+                        
+                        for (material in blockMaterials) {
+                            Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_everyone", material.name)))
+                            config.addRandomizer(
+                                "randomizer.everyone.${material.name}",
+                                everyItem.random()
+                            )
                         }
                     }
                 }
                 literalArgument("entity-to-items"){
                     anyExecutor{ _, _ ->
-                        var everyItem : MutableList<String> = mutableListOf()
-                        for (material in Material.values()) {
-                            if (material.isItem) {
-                                everyItem = everyItem.plus(material.name) as MutableList<String>
-                            }
-                        }
+                        val config = Config()
+                        
+                        // Build list of all item materials efficiently
+                        val everyItem = Material.values()
+                            .filter { it.isItem }
+                            .map { it.name }
+                            .toMutableList()
+                        
                         for (entity in EntityType.values()) {
                             Bukkit.broadcast(Main.prefix + cmp(at.mario.challenge.utils.Lang.translate("randomizing_for_everyone", entity.name)))
-                            Config().addRandomizer(
+                            config.addRandomizer(
                                 "randomizer.everyone.${entity.name}",
                                 everyItem.random()
                             )

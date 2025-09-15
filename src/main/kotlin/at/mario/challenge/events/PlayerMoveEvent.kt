@@ -30,6 +30,29 @@ import kotlin.collections.set
  * Handles player movement events, including logic for run randomizer and jump multiplier challenges.
  */
 object PlayerMoveEvent {
+    
+    // Cache frequently accessed config values to avoid repeated Config() calls in hot paths
+    private var freezeOnPause: Boolean = false
+    private var runDistanceGoal: Double = 500.0
+    
+    // Cache item materials list for performance
+    private val itemMaterials: List<Material> by lazy {
+        Material.values().filter { it.isItem }
+    }
+    
+    init {
+        // Initialize cached config values
+        refreshConfigCache()
+    }
+    
+    /**
+     * Refreshes cached config values. Should be called when config changes.
+     */
+    fun refreshConfigCache() {
+        val config = Config()
+        freezeOnPause = config.config.getBoolean("settings.freeze-on-pause")
+        runDistanceGoal = config.config.getDouble("run-randomizer.anzahl-der-distanz")
+    }
     /**
      * Listens for entity move events and cancels movement if the timer is paused.
      */
@@ -43,37 +66,45 @@ object PlayerMoveEvent {
      * Listens for player move events and applies run randomizer and jump multiplier logic.
      */
     val onRun = listen<PlayerMoveEvent> {
-        if (Timer.paused && (it.player.gameMode == GameMode.SURVIVAL || it.player.gameMode == GameMode.ADVENTURE) && Config().config.getBoolean("settings.freeze-on-pause")){
+        if (Timer.paused && (it.player.gameMode == GameMode.SURVIVAL || it.player.gameMode == GameMode.ADVENTURE) && freezeOnPause){
             if (it.to.block == it.from.block){
                 return@listen
             }
             it.isCancelled = true
             return@listen
         }
+        
         if (Challenges.RUN_RANDOMIZER.active) {
+            val config = Config()
+            
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!Main.bossBars.contains(player)) {
                     Main.bossBars[player] = Bukkit.createBossBar(Lang.translate("run_randomizer_bossbar"), BarColor.GREEN, BarStyle.SOLID)
                 }
-                val runBlocks = Config().config.getDouble("run-randomizer.run-blocks-amount.${player.name}")
-                Main.bossBars[player]!!.progress = Math.clamp(runBlocks/Config().config.getDouble("run-randomizer.anzahl-der-distanz"), 0.01, 0.99)
-                Main.bossBars[player]!!.setTitle("${ChatColor.BOLD}${ChatColor.GREEN}Lauf-Randomizer: ${runBlocks.toInt()}/${Config().config.getDouble("run-randomizer.anzahl-der-distanz").toInt()}")
+                
+                val runBlocks = config.config.getDouble("run-randomizer.run-blocks-amount.${player.name}")
+                val progress = Math.clamp(runBlocks / runDistanceGoal, 0.01, 0.99)
+                
+                Main.bossBars[player]!!.progress = progress
+                Main.bossBars[player]!!.setTitle("${ChatColor.BOLD}${ChatColor.GREEN}Lauf-Randomizer: ${runBlocks.toInt()}/${runDistanceGoal.toInt()}")
+                
                 if (!Main.bossBars[player]!!.players.contains(player)) {
                     Main.bossBars[player]!!.addPlayer(player)
                 }
+                
                 task(false, 0, 0, 1){task ->
-                    Config().add("run-randomizer.run-blocks-amount.${it.player.name}", Config().config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}") + it.to.distance(it.from))
-                    if (Config().config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}")>= Config().config.getDouble("run-randomizer.anzahl-der-distanz")) {
-                        Config().add("run-randomizer.run-blocks-amount.${player.name}", 0.0)
+                    val currentDistance = config.config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}")
+                    val newDistance = currentDistance + it.to.distance(it.from)
+                    config.set("run-randomizer.run-blocks-amount.${it.player.name}", newDistance)
+                    
+                    if (newDistance >= runDistanceGoal) {
+                        config.set("run-randomizer.run-blocks-amount.${player.name}", 0.0)
+                        config.save()
+                        
                         val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
                         player.playSound(sound)
-                        var everyMaterial: MutableList<Material> = mutableListOf()
-                        for (material in Material.values()) {
-                            if (material.isItem) {
-                                everyMaterial = everyMaterial.plus(material) as MutableList<Material>
-                            }
-                        }
-                        val randomMaterial : Material = everyMaterial.random()
+                        
+                        val randomMaterial = itemMaterials.random()
                         it.player.inventory.addItem(Utils().createItem(
                             randomMaterial, 64,
                             glow = false,

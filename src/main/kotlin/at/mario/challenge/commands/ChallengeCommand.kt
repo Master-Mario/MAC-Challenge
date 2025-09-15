@@ -35,18 +35,24 @@ class ChallengeCommand {
         literalArgument("reset"){
             literalArgument("next-player"){
                 anyExecutor { _, _ ->
+                    val config = Config()
+                    config.setInt("sequenz.next", 0)
+                    config.save()
+                    val message = prefix + cmp(Lang.translate("reset_next_player"))
                     for (player in Bukkit.getOnlinePlayers()) {
-                        Config().addInt("sequenz.next", 0)
-                        player.sendMessage(prefix + cmp(Lang.translate("reset_next_player")))
+                        player.sendMessage(message)
                     }
                 }
             }
             literalArgument("run-blocks"){
                 anyExecutor{ _, _ ->
+                    val config = Config()
+                    val message = prefix + cmp(Lang.translate("reset_run_block"))
                     for (player in Bukkit.getOnlinePlayers()) {
-                        Config().add("run-randomizer.run-blocks-amount.${player.name}", 0.0)
-                        player.sendMessage(prefix + cmp(Lang.translate("reset_run_block")))
+                        config.set("run-randomizer.run-blocks-amount.${player.name}", 0.0)
+                        player.sendMessage(message)
                     }
+                    config.save()
                 }
             }
         }
@@ -54,12 +60,13 @@ class ChallengeCommand {
             greedyStringArgument("challenges") {
                 replaceSuggestions(ArgumentSuggestions.stringCollection{ ChallengeManager().list})
                 anyExecutor { _, challengeName ->
+                    val config = Config()
                     for (challenge in Challenges.values()) {
                         if (challengeName[0] == challenge.nameString)
                             if (!challenge.active) {
                                 challenge.active = true
-                                Config().addBoolean(challenge.nameString, true)
-                                Config().save()
+                                config.setBoolean(challenge.nameString, true)
+                                config.save()
                                 Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_activated", challenge.nameString)))
                             } else
                                 Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_already_activated", challenge.nameString)))
@@ -71,12 +78,13 @@ class ChallengeCommand {
             greedyStringArgument("challenges") {
                 replaceSuggestions(ArgumentSuggestions.stringCollection{ ChallengeManager().list})
                 anyExecutor { _, challengeName ->
+                    val config = Config()
                     for (challenge in Challenges.values()) {
                         if (challengeName[0] == challenge.nameString)
                             if (challenge.active) {
                                 challenge.active = false
-                                Config().addBoolean(challenge.nameString, false)
-                                Config().save()
+                                config.setBoolean(challenge.nameString, false)
+                                config.save()
                                 Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_deactivated", challenge.nameString)))
                             } else
                                 Bukkit.broadcast(prefix + cmp(Lang.translate("challenge_already_deactivated", challenge.nameString)))
