@@ -10,6 +10,30 @@ import java.io.IOException
  * Supports adding and saving various types of values, and resetting the kills file.
  */
 class Config {
+    
+    companion object {
+        // Configuration key constants for consistency and to prevent typos
+        object Keys {
+            const val CAN_TRY = "canTry"
+            const val IS_RESET = "isReset"
+            const val LANGUAGE = "language"
+            const val TIMER = "timer"
+            
+            // Settings section
+            const val SETTINGS_VIEW_DISTANCE = "settings.view-distance"
+            const val SETTINGS_SIMULATION_DISTANCE = "settings.simulation-distance"
+            const val SETTINGS_PVP = "settings.pvp"
+            const val SETTINGS_FREEZE_ON_PAUSE = "settings.freeze-on-pause"
+            
+            // Run randomizer section
+            const val RUN_RANDOMIZER_DISTANCE_GOAL = "run-randomizer.distance-goal"
+            const val RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT = "run-randomizer.run-blocks-amount"
+            
+            // Sequence section
+            const val SEQUENCE_NEXT = "sequence.next"
+        }
+    }
+    
     /** Main configuration (config.yml) */
     val config: YamlConfiguration
     /** Kills configuration (kills.yml) */
@@ -182,6 +206,41 @@ class Config {
         }catch (e: IOException){
             Bukkit.getConsoleSender().sendMessage(Lang.translate("config_save_error", file.name))
             e.printStackTrace()
+        }
+    }
+
+    /**
+     * Migrates old German configuration keys to new English keys.
+     * This ensures backward compatibility while transitioning to English-only config.
+     */
+    fun migrateConfigKeys() {
+        var needsSave = false
+        
+        // Migrate German "anzahl-der-distanz" to English "distance-goal"
+        if (config.contains("run-randomizer.anzahl-der-distanz") && !config.contains(Keys.RUN_RANDOMIZER_DISTANCE_GOAL)) {
+            val oldValue = config.getInt("run-randomizer.anzahl-der-distanz")
+            config.set(Keys.RUN_RANDOMIZER_DISTANCE_GOAL, oldValue)
+            config.set("run-randomizer.anzahl-der-distanz", null) // Remove old key
+            needsSave = true
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_migrated_key", "run-randomizer.anzahl-der-distanz", Keys.RUN_RANDOMIZER_DISTANCE_GOAL))
+        }
+        
+        // Migrate old "sequenz" to English "sequence" (though this seems already done)
+        if (config.contains("sequenz")) {
+            // Get all keys under "sequenz" section
+            val sequenzSection = config.getConfigurationSection("sequenz")
+            if (sequenzSection != null && !config.contains("sequence")) {
+                for (key in sequenzSection.getKeys(false)) {
+                    config.set("sequence.$key", sequenzSection.get(key))
+                }
+                config.set("sequenz", null) // Remove old section
+                needsSave = true
+                Bukkit.getConsoleSender().sendMessage(Lang.translate("config_migrated_key", "sequenz", "sequence"))
+            }
+        }
+        
+        if (needsSave) {
+            save()
         }
     }
 

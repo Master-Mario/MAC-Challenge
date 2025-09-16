@@ -50,8 +50,8 @@ object PlayerMoveEvent {
      */
     fun refreshConfigCache() {
         val config = Config()
-        freezeOnPause = config.config.getBoolean("settings.freeze-on-pause")
-        runDistanceGoal = config.config.getDouble("run-randomizer.anzahl-der-distanz")
+        freezeOnPause = config.config.getBoolean(Config.Keys.SETTINGS_FREEZE_ON_PAUSE)
+        runDistanceGoal = config.config.getDouble(Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL, 500.0)
     }
     /**
      * Listens for entity move events and cancels movement if the timer is paused.
@@ -82,7 +82,7 @@ object PlayerMoveEvent {
                     Main.bossBars[player] = Bukkit.createBossBar(Lang.translate("run_randomizer_bossbar"), BarColor.GREEN, BarStyle.SOLID)
                 }
                 
-                val runBlocks = config.config.getDouble("run-randomizer.run-blocks-amount.${player.name}")
+                val runBlocks = config.config.getDouble("${Config.Keys.RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT}.${player.name}")
                 val progress = Math.clamp(runBlocks / runDistanceGoal, 0.01, 0.99)
                 
                 Main.bossBars[player]!!.progress = progress
@@ -93,12 +93,12 @@ object PlayerMoveEvent {
                 }
                 
                 task(false, 0, 0, 1){task ->
-                    val currentDistance = config.config.getDouble("run-randomizer.run-blocks-amount.${it.player.name}")
+                    val currentDistance = config.config.getDouble("${Config.Keys.RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT}.${it.player.name}")
                     val newDistance = currentDistance + it.to.distance(it.from)
-                    config.set("run-randomizer.run-blocks-amount.${it.player.name}", newDistance)
+                    config.set("${Config.Keys.RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT}.${it.player.name}", newDistance)
                     
                     if (newDistance >= runDistanceGoal) {
-                        config.set("run-randomizer.run-blocks-amount.${player.name}", 0.0)
+                        config.set("${Config.Keys.RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT}.${player.name}", 0.0)
                         config.save()
                         
                         val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)

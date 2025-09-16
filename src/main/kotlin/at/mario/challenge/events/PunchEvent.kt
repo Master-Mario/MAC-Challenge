@@ -28,7 +28,7 @@ object PunchEvent {
         if (it.damageSource.causingEntity is Player){
             if (Challenges.SEQUENCE.active){
                 val player = it.damageSource.causingEntity as Player
-                if (Config().config.getString("sequence._${Config().config.getInt("sequence.next")}_") != player.name){
+                if (Config().config.getString("sequence._${Config().config.getInt(Config.Keys.SEQUENCE_NEXT)}_") != player.name){
                     it.isCancelled = true
                     player.sendMessage(Main.prefix + cmp(Lang.translate("not_next_sequence"), de.miraculixx.kpaper.chat.KColors.RED))
                     player.health = 0.0
@@ -41,10 +41,10 @@ object PunchEvent {
                         val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
                         player.playSound(sound)
                     }
-                    if (Bukkit.getOnlinePlayers().size <= Config().config.getInt("sequence.next")){
-                        Config().addInt("sequence.next", 1)
+                    if (Bukkit.getOnlinePlayers().size <= Config().config.getInt(Config.Keys.SEQUENCE_NEXT)){
+                        Config().addInt(Config.Keys.SEQUENCE_NEXT, 1)
                     }else{
-                        Config().addInt("sequence.next", Config().config.getInt("sequence.next") + 1)
+                        Config().addInt(Config.Keys.SEQUENCE_NEXT, Config().config.getInt(Config.Keys.SEQUENCE_NEXT) + 1)
                     }
                 }
             }

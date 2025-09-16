@@ -732,6 +732,11 @@ object Lang {
             "en" to "Freeze on Pause",
             "es" to "Parar en Pausa"
         ),
+        "config_migrated_key" to mapOf(
+            "de" to "Konfigurationsschlüssel migriert: %s -> %s",
+            "en" to "Migrated config key: %s -> %s",
+            "es" to "Clave de configuración migrada: %s -> %s"
+        ),
     )
     
     // Cache the current language to avoid Config() calls in hot paths
@@ -743,7 +748,7 @@ object Lang {
      */
     fun refreshLanguage() {
         if (config == null) config = Config()
-        currentLanguage = config?.config?.getString("language") ?: "en"
+        currentLanguage = config?.config?.getString(Config.Keys.LANGUAGE) ?: "en"
     }
     
     /**
