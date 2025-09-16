@@ -67,7 +67,7 @@ object SettingsGUI {
             ))
         }
         // Disable Movement while Timer paused
-        if (Config().config.getBoolean("settings.freeze-on-pause")) {
+        if (Config().config.getBoolean(Config.Keys.SETTINGS_FREEZE_ON_PAUSE)) {
             settings.add(Utils().createItem(
                 Material.IRON_BOOTS, 1, glow = true, unbreakable = false, false,
                 cmp(Lang.translate("freeze_on_pause"), KColors.SKYBLUE, true),
@@ -112,7 +112,7 @@ object SettingsGUI {
             cmp(Lang.translate("language"), KColors.LIGHTBLUE, true),
             lines = listOf(
                 cmp(Lang.translate("language_change_hint"), KColors.GRAY),
-                cmp(Lang.translate("current"), KColors.GRAY) + cmp(Config().config.getString("language") ?: "de", KColors.LIGHTGREEN)
+                cmp(Lang.translate("current"), KColors.GRAY) + cmp(Config().config.getString(Config.Keys.LANGUAGE) ?: "en", KColors.LIGHTGREEN)
             )
         ))
 

@@ -231,7 +231,7 @@ object InventoryClickEvent {
                 ) {
                     val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
-                    Config().addBoolean("settings.freeze-on-pause", false)
+                    Config().addBoolean(Config.Keys.SETTINGS_FREEZE_ON_PAUSE, false)
                 } else if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
                             Lang.translate("disabled"),
@@ -241,7 +241,7 @@ object InventoryClickEvent {
                 ) {
                     val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
-                    Config().addBoolean("settings.freeze-on-pause", true)
+                    Config().addBoolean(Config.Keys.SETTINGS_FREEZE_ON_PAUSE, true)
                 }
             }
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("view_distance"), KColors.GAINSBORO, true)) {
@@ -293,7 +293,7 @@ object InventoryClickEvent {
                     for (world in Bukkit.getWorlds()) {
                         world.pvp = false
                     }
-                    Config().addBoolean("settings.pvp", false)
+                    Config().addBoolean(Config.Keys.SETTINGS_PVP, false)
                 } else if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
                             Lang.translate("disabled"),
@@ -306,11 +306,11 @@ object InventoryClickEvent {
                     for (world in Bukkit.getWorlds()) {
                         world.pvp = true
                     }
-                    Config().addBoolean("settings.pvp", true)
+                    Config().addBoolean(Config.Keys.SETTINGS_PVP, true)
                 }
             }
-            Config().addInt("settings.view-distance", Bukkit.getWorld("world")?.viewDistance ?: 10)
-            Config().addInt("settings.simulation-distance", Bukkit.getWorld("world")?.simulationDistance ?: 10)
+            Config().addInt(Config.Keys.SETTINGS_VIEW_DISTANCE, Bukkit.getWorld("world")?.viewDistance ?: 10)
+            Config().addInt(Config.Keys.SETTINGS_SIMULATION_DISTANCE, Bukkit.getWorld("world")?.simulationDistance ?: 10)
             SettingsGUI.open(player)
             if (it.currentItem?.type == Material.BOOK) {
                 val config = Config()
