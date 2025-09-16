@@ -36,7 +36,7 @@ class ChallengeCommand {
             literalArgument("next-player"){
                 anyExecutor { _, _ ->
                     val config = Config()
-                    config.setInt("sequenz.next", 0)
+                    config.setInt(Config.Keys.SEQUENCE_NEXT, 0)
                     config.save()
                     val message = prefix + cmp(Lang.translate("reset_next_player"))
                     for (player in Bukkit.getOnlinePlayers()) {
@@ -49,7 +49,7 @@ class ChallengeCommand {
                     val config = Config()
                     val message = prefix + cmp(Lang.translate("reset_run_block"))
                     for (player in Bukkit.getOnlinePlayers()) {
-                        config.set("run-randomizer.run-blocks-amount.${player.name}", 0.0)
+                        config.set("${Config.Keys.RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT}.${player.name}", 0.0)
                         player.sendMessage(message)
                     }
                     config.save()

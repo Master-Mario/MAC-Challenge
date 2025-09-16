@@ -86,7 +86,7 @@ enum class Challenges(
         Material.DIAMOND_SWORD,
         cmp(Lang.translate("challenge_run_randomizer"), bold = true, color = KColors.DARKGREEN),
         Lang.translate("challenge_run_randomizer"),
-        cmp(Lang.translate("challenge_run_randomizer_desc", Config().config.getInt("run-randomizer.anzahl-der-distanz")), KColors.LIGHTGRAY),
+        cmp(Lang.translate("challenge_run_randomizer_desc", Config().config.getInt(Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL)), KColors.LIGHTGRAY),
         false
     ),
     NO_BLOCK_DROPS(
