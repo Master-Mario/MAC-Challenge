@@ -217,12 +217,12 @@ class Config {
         var needsSave = false
         
         // Migrate German "anzahl-der-distanz" to English "distance-goal"
-        if (config.contains("run-randomizer.anzahl-der-distanz") && !config.contains(Keys.RUN_RANDOMIZER_DISTANCE_GOAL)) {
+        if (config.contains("run-randomizer.anzahl-der-distanz") && !config.contains(Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL)) {
             val oldValue = config.getInt("run-randomizer.anzahl-der-distanz")
-            config.set(Keys.RUN_RANDOMIZER_DISTANCE_GOAL, oldValue)
+            config.set(Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL, oldValue)
             config.set("run-randomizer.anzahl-der-distanz", null) // Remove old key
             needsSave = true
-            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_migrated_key", "run-randomizer.anzahl-der-distanz", Keys.RUN_RANDOMIZER_DISTANCE_GOAL))
+            Bukkit.getConsoleSender().sendMessage(Lang.translate("config_migrated_key", "run-randomizer.anzahl-der-distanz", Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL))
         }
         
         // Migrate old "sequenz" to English "sequence" (though this seems already done)

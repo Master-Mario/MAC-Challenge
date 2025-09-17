@@ -65,7 +65,6 @@ object BlockDropEvent {
                 Bukkit.broadcast(Main.prefix + cmp(Lang.translate("block_no_drop_defined", it.block.type.name, it.player.name)))
                 it.isCancelled = true
             }
-            }
         }
     }
     /**
@@ -117,7 +116,6 @@ object BlockDropEvent {
                     }
                     it.block.drops.clear()
                 }
-            }
             }
         }
     }
