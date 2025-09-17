@@ -10,7 +10,6 @@ import de.miraculixx.kpaper.extensions.bukkit.plus
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.potion.PotionEffectType
 
@@ -86,7 +85,7 @@ enum class Challenges(
         Material.DIAMOND_SWORD,
         cmp(Lang.translate("challenge_run_randomizer"), bold = true, color = KColors.DARKGREEN),
         Lang.translate("challenge_run_randomizer"),
-        cmp(Lang.translate("challenge_run_randomizer_desc", Config().config.getInt(Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL)), KColors.LIGHTGRAY),
+        cmp(Lang.translate("challenge_run_randomizer_desc", Config().config.getInt(Config.Companion.Keys.RUN_RANDOMIZER_DISTANCE_GOAL)), KColors.LIGHTGRAY),
         false
     ),
     NO_BLOCK_DROPS(

@@ -748,7 +748,7 @@ object Lang {
      */
     fun refreshLanguage() {
         if (config == null) config = Config()
-        currentLanguage = config?.config?.getString(Config.Keys.LANGUAGE) ?: "en"
+        currentLanguage = config?.config?.getString(Config.Companion.Keys.LANGUAGE) ?: "en"
     }
     
     /**

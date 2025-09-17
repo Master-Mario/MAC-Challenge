@@ -124,7 +124,7 @@ class Main : KPaper() {
         
         // Initialize player run-blocks-amount in config if not present
         for (player in Bukkit.getOnlinePlayers()) {
-            val key = "${Config.Keys.RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT}.${player.name}"
+            val key = "${Config.Companion.Keys.RUN_RANDOMIZER_RUN_BLOCKS_AMOUNT}.${player.name}"
             if (!config.config.contains(key)){
                 config.add(key, 0.0)
             }
@@ -157,46 +157,46 @@ class Main : KPaper() {
         var needsSave = false
         
         // Core settings with English defaults
-        if (!config.config.contains(Config.Keys.CAN_TRY)) {
-            config.setBoolean(Config.Keys.CAN_TRY, false)
+        if (!config.config.contains(Config.Companion.Keys.CAN_TRY)) {
+            config.setBoolean(Config.Companion.Keys.CAN_TRY, false)
             needsSave = true
         }
-        if (!config.config.contains(Config.Keys.IS_RESET)) {
-            config.setBoolean(Config.Keys.IS_RESET, false)
+        if (!config.config.contains(Config.Companion.Keys.IS_RESET)) {
+            config.setBoolean(Config.Companion.Keys.IS_RESET, false)
             needsSave = true
         }
-        if (!config.config.contains(Config.Keys.LANGUAGE)) {
-            config.setString(Config.Keys.LANGUAGE, "en")
+        if (!config.config.contains(Config.Companion.Keys.LANGUAGE)) {
+            config.setString(Config.Companion.Keys.LANGUAGE, "en")
             needsSave = true
         }
         
         // World settings section
-        if (!config.config.contains(Config.Keys.SETTINGS_VIEW_DISTANCE)) {
-            config.setInt(Config.Keys.SETTINGS_VIEW_DISTANCE, 10)
+        if (!config.config.contains(Config.Companion.Keys.SETTINGS_VIEW_DISTANCE)) {
+            config.setInt(Config.Companion.Keys.SETTINGS_VIEW_DISTANCE, 10)
             needsSave = true
         }
-        if (!config.config.contains(Config.Keys.SETTINGS_SIMULATION_DISTANCE)) {
-            config.setInt(Config.Keys.SETTINGS_SIMULATION_DISTANCE, 10)
+        if (!config.config.contains(Config.Companion.Keys.SETTINGS_SIMULATION_DISTANCE)) {
+            config.setInt(Config.Companion.Keys.SETTINGS_SIMULATION_DISTANCE, 10)
             needsSave = true
         }
-        if (!config.config.contains(Config.Keys.SETTINGS_PVP)) {
-            config.setBoolean(Config.Keys.SETTINGS_PVP, true)
+        if (!config.config.contains(Config.Companion.Keys.SETTINGS_PVP)) {
+            config.setBoolean(Config.Companion.Keys.SETTINGS_PVP, true)
             needsSave = true
         }
-        if (!config.config.contains(Config.Keys.SETTINGS_FREEZE_ON_PAUSE)) {
-            config.setBoolean(Config.Keys.SETTINGS_FREEZE_ON_PAUSE, false)
+        if (!config.config.contains(Config.Companion.Keys.SETTINGS_FREEZE_ON_PAUSE)) {
+            config.setBoolean(Config.Companion.Keys.SETTINGS_FREEZE_ON_PAUSE, false)
             needsSave = true
         }
         
         // Run randomizer settings with English keys
-        if (!config.config.contains(Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL)) {
-            config.setInt(Config.Keys.RUN_RANDOMIZER_DISTANCE_GOAL, 500)
+        if (!config.config.contains(Config.Companion.Keys.RUN_RANDOMIZER_DISTANCE_GOAL)) {
+            config.setInt(Config.Companion.Keys.RUN_RANDOMIZER_DISTANCE_GOAL, 500)
             needsSave = true
         }
         
         // Timer settings
-        if (!config.config.contains(Config.Keys.TIMER)) {
-            config.setInt(Config.Keys.TIMER, 0)
+        if (!config.config.contains(Config.Companion.Keys.TIMER)) {
+            config.setInt(Config.Companion.Keys.TIMER, 0)
             needsSave = true
         }
         
@@ -205,7 +205,7 @@ class Main : KPaper() {
         }
 
         // Handle world reset if isReset is true
-        if (config.config.getBoolean(Config.Keys.IS_RESET)) {
+        if (config.config.getBoolean(Config.Companion.Keys.IS_RESET)) {
             reset = true
             try {
                 resetWorldDirectories()
@@ -214,7 +214,7 @@ class Main : KPaper() {
                 e.printStackTrace()
             }
 
-            config.setBoolean(Config.Keys.IS_RESET, false)
+            config.setBoolean(Config.Companion.Keys.IS_RESET, false)
             config.save()
         }
     }
@@ -274,26 +274,26 @@ class Main : KPaper() {
         // Set world settings from config or use defaults
         var needsSave = false
         
-        val viewDistance = if (config.config.contains(Config.Keys.SETTINGS_VIEW_DISTANCE)) {
-            config.config.getInt(Config.Keys.SETTINGS_VIEW_DISTANCE)
+        val viewDistance = if (config.config.contains(Config.Companion.Keys.SETTINGS_VIEW_DISTANCE)) {
+            config.config.getInt(Config.Companion.Keys.SETTINGS_VIEW_DISTANCE)
         } else {
-            config.setInt(Config.Keys.SETTINGS_VIEW_DISTANCE, 10)
+            config.setInt(Config.Companion.Keys.SETTINGS_VIEW_DISTANCE, 10)
             needsSave = true
             10
         }
         
-        val simulationDistance = if (config.config.contains(Config.Keys.SETTINGS_SIMULATION_DISTANCE)) {
-            config.config.getInt(Config.Keys.SETTINGS_SIMULATION_DISTANCE)
+        val simulationDistance = if (config.config.contains(Config.Companion.Keys.SETTINGS_SIMULATION_DISTANCE)) {
+            config.config.getInt(Config.Companion.Keys.SETTINGS_SIMULATION_DISTANCE)
         } else {
-            config.setInt(Config.Keys.SETTINGS_SIMULATION_DISTANCE, 10)
+            config.setInt(Config.Companion.Keys.SETTINGS_SIMULATION_DISTANCE, 10)
             needsSave = true
             10
         }
         
-        val pvpEnabled = if (config.config.contains(Config.Keys.SETTINGS_PVP)) {
-            config.config.getBoolean(Config.Keys.SETTINGS_PVP)
+        val pvpEnabled = if (config.config.contains(Config.Companion.Keys.SETTINGS_PVP)) {
+            config.config.getBoolean(Config.Companion.Keys.SETTINGS_PVP)
         } else {
-            config.setBoolean(Config.Keys.SETTINGS_PVP, true)
+            config.setBoolean(Config.Companion.Keys.SETTINGS_PVP, true)
             needsSave = true
             true
         }
@@ -340,7 +340,7 @@ class Main : KPaper() {
         
         // Initialize timer from config or set to zero if reset
         if (!reset){
-            Timer.setTime(config.config.getInt(Config.Keys.TIMER).seconds)
+            Timer.setTime(config.config.getInt(Config.Companion.Keys.TIMER).seconds)
         } else {
             Timer.setTime(ZERO)
         }
@@ -361,11 +361,11 @@ class Main : KPaper() {
         
         resetCommand?.let { command ->
             if (command.reset) {
-                config.setBoolean(Config.Keys.IS_RESET, true)
+                config.setBoolean(Config.Companion.Keys.IS_RESET, true)
             }
         }
 
-        if (!config.config.getBoolean(Config.Keys.IS_RESET)){
+        if (!config.config.getBoolean(Config.Companion.Keys.IS_RESET)){
             // Use relative path instead of hardcoded Windows path
             val serverManagerConfigPath = File(dataFolder.parentFile, "MAC-ServerManager/config.yml")
             if (serverManagerConfigPath.exists()) {
