@@ -65,7 +65,6 @@ object BlockDropEvent {
                 Bukkit.broadcast(Main.prefix + cmp(Lang.translate("block_no_drop_defined", it.block.type.name, it.player.name)))
                 it.isCancelled = true
             }
-            }
         }
     }
     /**
@@ -102,7 +101,7 @@ object BlockDropEvent {
                     }
                 }
                 if (closestp == null) {
-                    Bukkit.broadcast(Main.prefix + cmp("No player found for block break!"));
+                    Bukkit.broadcast(Main.prefix + cmp("No player found for block break!"))
                 } else {
                     val mapped = getRandomizedDrop(it.block.type.name, closestp.name, true)
                     if (mapped != null) {
@@ -113,11 +112,10 @@ object BlockDropEvent {
                             )
                         )
                     } else {
-                        Bukkit.broadcast(Main.prefix + cmp("${it.block.type.name} has no drop defined! Triggered by ${closestp.name}"));
+                        Bukkit.broadcast(Main.prefix + cmp("${it.block.type.name} has no drop defined! Triggered by ${closestp.name}"))
                     }
                     it.block.drops.clear()
                 }
-            }
             }
         }
     }
@@ -144,7 +142,7 @@ object BlockDropEvent {
             }
             if (Randomizer.PER_PLAYER.active){
                 if (closestp == null) {
-                    Bukkit.broadcast(Main.prefix + cmp("No player found for explosion!"));
+                    Bukkit.broadcast(Main.prefix + cmp("No player found for explosion!"))
                 } else {
                     val mapped = getRandomizedDrop(it.block.type.name, closestp.name, true)
                     if (mapped != null) {
@@ -155,7 +153,7 @@ object BlockDropEvent {
                             )
                         )
                     } else {
-                        Bukkit.broadcast(Main.prefix + cmp("${it.block.type.name} has no drop defined! Triggered by ${closestp.name}"));
+                        Bukkit.broadcast(Main.prefix + cmp("${it.block.type.name} has no drop defined! Triggered by ${closestp.name}"))
                         it.isCancelled = true
                     }
                 }
