@@ -23,9 +23,9 @@ jobs:
             cd /pfad/zum/produktions-verzeichnis
             git pull origin main
 
-      - name: Restart Minecraft Prod-Server via Pterodactyl API
+      - name: Reload Bukkit Server via Pterodactyl API
         run: |
-          curl -X POST "${{ secrets.PTERO_PANEL_URL }}/api/client/servers/${{ secrets.PTERO_SERVER_ID }}/power" \
+          curl -X POST "${{ secrets.PTERO_PANEL_URL }}/api/client/servers/${{ secrets.PTERO_SERVER_ID }}/command" \
             -H "Authorization: Bearer ${{ secrets.PTERO_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"signal":"restart"}'
+            -d '{"command":"bukkit:reload confirm"}'
