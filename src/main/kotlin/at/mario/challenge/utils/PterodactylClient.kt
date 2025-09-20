@@ -131,7 +131,7 @@ class PterodactylClient(
         val createDirJson = """{ \"root\": \"/\", \"files\": [\"plugins\"] }"""
         sendRequest("$apiUrl/servers/$serverId/files/create-folder", clientApiKey, "POST", createDirJson)
 
-        val url = URL("$apiUrl/servers/$serverId/files/write?file=/plugins/ChallengePLUGIN.jar&encoding=base64")
+        val url = URL("$apiUrl/servers/$serverId/files/write?file=/plugins/plugin.jar&encoding=base64")
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "POST"
         connection.setRequestProperty("Authorization", "Bearer $clientApiKey")

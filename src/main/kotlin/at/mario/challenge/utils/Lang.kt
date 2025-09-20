@@ -28,9 +28,9 @@ object Lang {
             "es" to "Error al guardar la configuración: %s"
         ),
         "plugin_upload_success" to mapOf(
-            "de" to "📦 Plugin ChallengePLUGIN hochgeladen (Code %d): %s",
-            "en" to "📦 Plugin ChallengePLUGIN uploaded (Code %d): %s",
-            "es" to "📦 Plugin ChallengePLUGIN subido (Código %d): %s"
+            "de" to "📦 Plugin ChallengePlugin hochgeladen (Code %d): %s",
+            "en" to "📦 Plugin ChallengePlugin uploaded (Code %d): %s",
+            "es" to "📦 Plugin ChallengePlugin subido (Código %d): %s"
         ),
         "no_free_allocations" to mapOf(
             "de" to "Keine freien Allocations verfügbar!",
