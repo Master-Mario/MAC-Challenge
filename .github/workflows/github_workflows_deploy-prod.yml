@@ -23,12 +23,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      # Prepare JAR files for deployment (flatten directory structure)
-      - name: Prepare plugin files
-        run: |
-          mkdir -p deploy-staging
-          cp build/libs/*.jar deploy-staging/
-
       # Kopiere das gebaute JAR auf den Server
       - name: Copy plugin to Challenge Server via SSH
         uses: appleboy/scp-action@v0.1.7
@@ -37,8 +31,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: deploy-staging/*.jar
+          source: build/libs/*.jar
           target: /var/lib/pterodactyl/volumes/f5f577cd-0b22-4b2f-ae90-fb23cc1b2a15/plugins/
+          strip_components: 2
 
       # Führe den reload-Befehl über die Pterodactyl API aus
       - name: Reload Bukkit Server via Pterodactyl API
