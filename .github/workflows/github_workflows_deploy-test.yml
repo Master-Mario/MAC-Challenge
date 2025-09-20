@@ -1,9 +1,9 @@
-name: Build & Deploy to Production Server
+name: Build & Deploy to Testserver
 
 on:
   push:
     branches:
-      - main
+      - development
 
 jobs:
   build-and-deploy:
