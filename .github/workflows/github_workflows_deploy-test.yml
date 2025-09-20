@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           source: build/libs/*.jar
-          target: cd /var/lib/pterodactyl/volumes/945744a8-4c1e-4753-918c-a01d9a7f0b48/plugins/
+          target: /var/lib/pterodactyl/volumes/945744a8-4c1e-4753-918c-a01d9a7f0b48/plugins/
 
       # Führe den reload-Befehl über die Pterodactyl API aus
       - name: Reload Bukkit Server via Pterodactyl API
