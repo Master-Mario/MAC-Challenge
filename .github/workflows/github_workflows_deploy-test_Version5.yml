@@ -1,31 +1,43 @@
-name: Deploy to Testserver
+name: Build & Deploy to Production Server
 
 on:
   push:
     branches:
-      - development
+      - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Test-Verzeichnis via SSH (Password)
-        uses: appleboy/ssh-action@v1.0.3
+      # Baue das Plugin (hier Gradle, passe den Befehl ggf. an)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      # Kopiere das gebaute JAR auf den Server
+      - name: Copy plugin to Challenge Server via SSH
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          script: |
-            cd /var/lib/pterodactyl/volumes/945744a8-4c1e-4753-918c-a01d9a7f0b48/plugins
-            git pull origin development
+          source: build/libs/*.jar
+          target: cd /var/lib/pterodactyl/volumes/945744a8-4c1e-4753-918c-a01d9a7f0b48/plugins/
 
-      - name: Restart Minecraft Test-Server via Pterodactyl API
+      # Führe den reload-Befehl über die Pterodactyl API aus
+      - name: Reload Bukkit Server via Pterodactyl API
         run: |
-          curl -X POST "${{ secrets.PTERO_PANEL_URL }}/api/client/servers/${{ secrets.PTERO_SERVER_ID_DEV }}/power" \
+          curl -X POST "${{ secrets.PTERO_PANEL_URL }}/api/client/servers/${{ secrets.PTERO_SERVER_ID_DEV }}/command" \
             -H "Authorization: Bearer ${{ secrets.PTERO_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"signal":"restart"}'
+            -d '{"command":"bukkit:reload confirm"}'
