@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: build/libs/*.jar
+          source: build/libs/ChallengePlugin-1.0-SNAPSHOT.jar
           target: /var/lib/pterodactyl/volumes/f5f577cd-0b22-4b2f-ae90-fb23cc1b2a15/plugins/
           strip_components: 2
 
