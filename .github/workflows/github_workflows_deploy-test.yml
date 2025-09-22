@@ -1,9 +1,9 @@
-name: Build & Deploy to Production Server
+name: Build & Deploy to Testserver
 
 on:
   push:
     branches:
-      - main
+      - development
 
 jobs:
   build-and-deploy:
@@ -32,13 +32,13 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           source: build/libs/ChallengePlugin-1.0-SNAPSHOT.jar
-          target: /var/lib/pterodactyl/volumes/f5f577cd-0b22-4b2f-ae90-fb23cc1b2a15/plugins/
+          target: /var/lib/pterodactyl/volumes/945744a8-4c1e-4753-918c-a01d9a7f0b48/plugins/
           strip_components: 2
 
       # Führe den reload-Befehl über die Pterodactyl API aus
       - name: Reload Bukkit Server via Pterodactyl API
         run: |
-          curl -X POST "${{ secrets.PTERO_PANEL_URL }}/api/client/servers/${{ secrets.PTERO_SERVER_ID }}/command" \
+          curl -X POST "${{ secrets.PTERO_PANEL_URL }}/api/client/servers/${{ secrets.PTERO_SERVER_ID_DEV }}/command" \
             -H "Authorization: Bearer ${{ secrets.PTERO_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"command":"bukkit:reload confirm"}'
