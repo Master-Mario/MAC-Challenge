@@ -2,6 +2,7 @@ package at.mario.challenge.events
 
 import at.mario.challenge.Main
 import at.mario.challenge.challenges.Challenges
+import at.mario.challenge.timer.Timer
 import at.mario.challenge.utils.Config
 import at.mario.challenge.utils.Lang
 import de.miraculixx.kpaper.event.listen
@@ -22,6 +23,10 @@ object PunchEvent {
      * Listens for entity damage by entity events and applies sequence challenge logic.
      */
     val onPunch = listen<EntityDamageByEntityEvent> {
+        if (Timer.paused) {
+            it.isCancelled = true
+            return@listen
+        }
         if (!it.entity.type.isSpawnable){
             return@listen
         }
