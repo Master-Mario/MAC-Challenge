@@ -29,7 +29,7 @@ object Timer {
     /** Current timer value. */
     private var time = Duration.ZERO
     /** Whether the timer display is hidden. */
-    var hidden = true
+    var hidden = false
     /** Whether the win condition has been reached. */
     var win = false
 

@@ -261,6 +261,7 @@ class Main : KPaper() {
         MABClickEvent
         CraftEvent
         RegenerationEvent
+        BlockPlaceEvent
         CommandAPI.onEnable()
         server.consoleSender.sendMessage(cmp("\n"+
                 "_________ .__           .__  .__                   ____       __________.____            ____ .__        \n" +
