@@ -155,45 +155,79 @@ object InventoryClickEvent {
             }
         }else if (it.view.title == Lang.translate("settings_title")){
             it.isCancelled = true
+            
+            // Handle back button first (highest priority)
+            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("back"))){
+                val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
+                player.playSound(sound)
+                MainGUI.open(player)
+                return@listen
+            }
+            
             // Navigation for settings pages
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("previous_page"))) {
                 val currentPage = at.mario.challenge.guis.SettingsGUI.playerPages[player.name] ?: 0
-                at.mario.challenge.guis.SettingsGUI.open(player, currentPage - 1)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
+                at.mario.challenge.guis.SettingsGUI.open(player, currentPage - 1)
                 return@listen
             } else if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("next_page"))) {
                 val currentPage = at.mario.challenge.guis.SettingsGUI.playerPages[player.name] ?: 0
-                at.mario.challenge.guis.SettingsGUI.open(player, currentPage + 1)
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
+                at.mario.challenge.guis.SettingsGUI.open(player, currentPage + 1)
                 return@listen
             }
+            
+            // Language change handling
+            if (it.currentItem?.type == Material.BOOK) {
+                val config = Config()
+                val current = config.config.getString("language") ?: "en"
+                val available = listOf("de", "en", "es")
+                val idx = available.indexOf(current)
+                val next = available[(idx + 1) % available.size]
+                config.addString("language", next)
+                Lang.refreshLanguage() // Update language cache
+                player.sendMessage(Main.prefix + cmp(Lang.translate("language_changed", next), KColors.LIGHTPURPLE))
+                Bukkit.reload()
+                return@listen
+            }
+            
+            // Track if we need to refresh the GUI
+            var needsGuiRefresh = false
+            
+            // Difficulty changes
             if (it.currentItem?.type == Material.LIME_DYE){
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
                 for (world in Bukkit.getWorlds()) {
                     world.difficulty = Difficulty.EASY
                 }
+                needsGuiRefresh = true
             }else if (it.currentItem?.type == Material.YELLOW_DYE) {
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
                 for (world in Bukkit.getWorlds()) {
                     world.difficulty = Difficulty.NORMAL
                 }
+                needsGuiRefresh = true
             }else if (it.currentItem?.type == Material.ORANGE_DYE) {
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
                 for (world in Bukkit.getWorlds()) {
                     world.difficulty = Difficulty.HARD
                 }
+                needsGuiRefresh = true
             }else if (it.currentItem?.type == Material.RED_DYE) {
                 val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                 player.playSound(sound)
                 for (world in Bukkit.getWorlds()) {
                     world.difficulty = Difficulty.PEACEFUL
                 }
+                needsGuiRefresh = true
             }
+            
+            // Natural regeneration toggle
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("natural_regen"), KColors.AZURE, true)) {
                 if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
@@ -207,6 +241,7 @@ object InventoryClickEvent {
                     for (world in Bukkit.getWorlds()) {
                         world.setGameRule(GameRule.NATURAL_REGENERATION, false)
                     }
+                    needsGuiRefresh = true
                 } else if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
                             Lang.translate("disabled"),
@@ -219,8 +254,11 @@ object InventoryClickEvent {
                     for (world in Bukkit.getWorlds()) {
                         world.setGameRule(GameRule.NATURAL_REGENERATION, true)
                     }
+                    needsGuiRefresh = true
                 }
             }
+            
+            // Freeze on pause toggle
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("freeze_on_pause"), KColors.SKYBLUE, true)) {
                 if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
@@ -232,6 +270,7 @@ object InventoryClickEvent {
                     val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
                     Config().addBoolean(Config.Companion.Keys.SETTINGS_FREEZE_ON_PAUSE, false)
+                    needsGuiRefresh = true
                 } else if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
                             Lang.translate("disabled"),
@@ -242,8 +281,11 @@ object InventoryClickEvent {
                     val sound = Sound.sound(Key.key("entity.player.levelup"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
                     Config().addBoolean(Config.Companion.Keys.SETTINGS_FREEZE_ON_PAUSE, true)
+                    needsGuiRefresh = true
                 }
             }
+            
+            // View distance adjustment
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("view_distance"), KColors.GAINSBORO, true)) {
                 if (it.isLeftClick) {
                     for (world in Bukkit.getWorlds()) {
@@ -251,17 +293,18 @@ object InventoryClickEvent {
                     }
                     val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
+                    needsGuiRefresh = true
                 } else if (it.isRightClick) {
                     for (world in Bukkit.getWorlds()) {
                         world.viewDistance -= 1
                     }
                     val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
-                } else {
-                    val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
-                    player.playSound(sound)
+                    needsGuiRefresh = true
                 }
             }
+            
+            // Simulation distance adjustment
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("simulation_distance"), KColors.PURPLE, true)) {
                 if (it.isLeftClick){
                     for (world in Bukkit.getWorlds()) {
@@ -269,17 +312,18 @@ object InventoryClickEvent {
                     }
                     val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
+                    needsGuiRefresh = true
                 }else if (it.isRightClick){
                     for (world in Bukkit.getWorlds()) {
                         world.simulationDistance -= 1
                     }
                     val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
                     player.playSound(sound)
-                }else{
-                    val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
-                    player.playSound(sound)
+                    needsGuiRefresh = true
                 }
             }
+            
+            // PVP toggle
             if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("pvp"), KColors.TOMATO, true)) {
                 if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
@@ -294,6 +338,7 @@ object InventoryClickEvent {
                         world.pvp = false
                     }
                     Config().addBoolean(Config.Companion.Keys.SETTINGS_PVP, false)
+                    needsGuiRefresh = true
                 } else if (it.currentItem?.lore() == listOf(
                         cmp(Lang.translate("status"), KColors.GRAY) + cmp(
                             Lang.translate("disabled"),
@@ -307,28 +352,15 @@ object InventoryClickEvent {
                         world.pvp = true
                     }
                     Config().addBoolean(Config.Companion.Keys.SETTINGS_PVP, true)
+                    needsGuiRefresh = true
                 }
             }
-            Config().addInt(Config.Companion.Keys.SETTINGS_VIEW_DISTANCE, Bukkit.getWorld("world")?.viewDistance ?: 10)
-            Config().addInt(Config.Companion.Keys.SETTINGS_SIMULATION_DISTANCE, Bukkit.getWorld("world")?.simulationDistance ?: 10)
-            SettingsGUI.open(player)
-            if (it.currentItem?.type == Material.BOOK) {
-                val config = Config()
-                val current = config.config.getString("language") ?: "en"
-                val available = listOf("de", "en", "es")
-                val idx = available.indexOf(current)
-                val next = available[(idx + 1) % available.size]
-                config.addString("language", next)
-                Lang.refreshLanguage() // Update language cache
+            
+            // Update config with current distances and refresh GUI only if needed
+            if (needsGuiRefresh) {
+                Config().addInt(Config.Companion.Keys.SETTINGS_VIEW_DISTANCE, Bukkit.getWorld("world")?.viewDistance ?: 10)
+                Config().addInt(Config.Companion.Keys.SETTINGS_SIMULATION_DISTANCE, Bukkit.getWorld("world")?.simulationDistance ?: 10)
                 SettingsGUI.open(player)
-                player.sendMessage(Main.prefix + cmp(Lang.translate("language_changed", next), KColors.LIGHTPURPLE))
-                Bukkit.reload()
-                return@listen
-            }
-            if (it.currentItem?.itemMeta?.name == cmp(Lang.translate("back"))){
-                val sound = Sound.sound(Key.key("block.dispenser.dispense"), Sound.Source.MASTER, 0.5f, 1f)
-                player.playSound(sound)
-                MainGUI.open(player)
             }
         }else if (it.view.title == Lang.translate("battle_menu_title")){
             it.isCancelled = true
